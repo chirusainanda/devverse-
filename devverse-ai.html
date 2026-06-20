@@ -1,0 +1,2487 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DevVerse AI — The Future of Developer Tooling</title>
+<meta name="description" content="DevVerse AI is the all-in-one AI-powered developer platform. Code generation, bug finding, career advice, mock interviews, and more.">
+<meta name="keywords" content="AI code generator, developer tools, GitHub analyzer, bug finder, resume analyzer, career advisor, mock interview">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --neon-cyan:#00f5ff;--neon-purple:#bf5fff;--neon-green:#39ff14;--neon-pink:#ff006e;
+  --bg:#050510;--bg2:#0a0a1f;--bg3:#0d0d2b;--surface:rgba(255,255,255,0.04);
+  --surface2:rgba(255,255,255,0.08);--border:rgba(255,255,255,0.1);
+  --text:#e8e8ff;--text2:#8888bb;--text3:#5555aa;
+  --radius:12px;--radius-lg:20px;
+}
+html{scroll-behavior:smooth;font-size:16px}
+body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;overflow-x:hidden;min-height:100vh}
+
+/* === SCROLLBAR === */
+::-webkit-scrollbar{width:6px}
+::-webkit-scrollbar-track{background:var(--bg2)}
+::-webkit-scrollbar-thumb{background:var(--neon-purple);border-radius:3px}
+
+/* === PARTICLES BG === */
+#particles-canvas{position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;pointer-events:none}
+
+/* === LAYOUT === */
+.container{max-width:1200px;margin:0 auto;padding:0 24px;position:relative;z-index:1}
+.page{display:none;min-height:100vh;position:relative;z-index:1}
+.page.active{display:block}
+
+/* === GLASSMORPHISM === */
+.glass{background:rgba(255,255,255,0.05);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,0.1);border-radius:var(--radius-lg)}
+.glass-dark{background:rgba(5,5,16,0.8);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border:1px solid var(--border);border-radius:var(--radius-lg)}
+
+/* === NEON TEXT === */
+.neon-cyan{color:var(--neon-cyan);text-shadow:0 0 20px rgba(0,245,255,0.5)}
+.neon-purple{color:var(--neon-purple);text-shadow:0 0 20px rgba(191,95,255,0.5)}
+.neon-green{color:var(--neon-green);text-shadow:0 0 20px rgba(57,255,20,0.5)}
+.neon-pink{color:var(--neon-pink);text-shadow:0 0 20px rgba(255,0,110,0.5)}
+.gradient-text{background:linear-gradient(135deg,var(--neon-cyan),var(--neon-purple),var(--neon-pink));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+
+/* === BUTTONS === */
+.btn{display:inline-flex;align-items:center;gap:8px;padding:12px 28px;border-radius:50px;font-size:14px;font-weight:600;cursor:pointer;transition:all .3s;border:none;text-decoration:none;letter-spacing:.5px;position:relative;overflow:hidden}
+.btn::before{content:'';position:absolute;top:0;left:-100%;width:100%;height:100%;background:linear-gradient(90deg,transparent,rgba(255,255,255,0.1),transparent);transition:left .5s}
+.btn:hover::before{left:100%}
+.btn-primary{background:linear-gradient(135deg,var(--neon-cyan),var(--neon-purple));color:#fff;box-shadow:0 0 30px rgba(0,245,255,0.3)}
+.btn-primary:hover{box-shadow:0 0 50px rgba(0,245,255,0.5);transform:translateY(-2px)}
+.btn-outline{background:transparent;color:var(--neon-cyan);border:1px solid var(--neon-cyan);box-shadow:0 0 15px rgba(0,245,255,0.1)}
+.btn-outline:hover{background:rgba(0,245,255,0.1);box-shadow:0 0 30px rgba(0,245,255,0.3);transform:translateY(-2px)}
+.btn-ghost{background:rgba(255,255,255,0.06);color:var(--text);border:1px solid var(--border)}
+.btn-ghost:hover{background:rgba(255,255,255,0.12);border-color:var(--neon-purple)}
+.btn-danger{background:linear-gradient(135deg,#ff006e,#ff4444);color:#fff}
+.btn-sm{padding:8px 18px;font-size:13px}
+.btn-lg{padding:16px 40px;font-size:16px}
+
+/* === NAVBAR === */
+#navbar{position:fixed;top:0;width:100%;z-index:1000;padding:16px 0;transition:all .3s}
+#navbar.scrolled{background:rgba(5,5,16,0.9);backdrop-filter:blur(20px);border-bottom:1px solid var(--border)}
+.nav-inner{display:flex;align-items:center;justify-content:space-between}
+.logo{font-size:22px;font-weight:800;cursor:pointer;letter-spacing:-0.5px}
+.logo span{font-weight:300}
+.nav-links{display:flex;align-items:center;gap:32px;list-style:none}
+.nav-links a{color:var(--text2);text-decoration:none;font-size:14px;transition:color .3s;cursor:pointer}
+.nav-links a:hover{color:var(--neon-cyan)}
+.nav-actions{display:flex;gap:12px;align-items:center}
+
+/* === HERO === */
+#hero{padding:160px 0 100px;text-align:center;position:relative}
+.hero-badge{display:inline-flex;align-items:center;gap:8px;padding:6px 16px;border-radius:50px;background:rgba(0,245,255,0.1);border:1px solid rgba(0,245,255,0.3);font-size:12px;color:var(--neon-cyan);margin-bottom:32px;animation:float 3s ease-in-out infinite}
+.hero-title{font-size:clamp(48px,8vw,96px);font-weight:900;line-height:1;margin-bottom:24px;letter-spacing:-2px}
+.hero-sub{font-size:20px;color:var(--text2);max-width:600px;margin:0 auto 48px;line-height:1.6}
+.hero-actions{display:flex;gap:16px;justify-content:center;flex-wrap:wrap;margin-bottom:80px}
+.hero-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:32px;max-width:700px;margin:0 auto}
+.stat-card{padding:24px;text-align:center}
+.stat-num{font-size:48px;font-weight:800;line-height:1}
+.stat-label{font-size:13px;color:var(--text2);margin-top:4px}
+
+/* === FLOATING SHAPES === */
+.shape{position:absolute;border-radius:50%;filter:blur(80px);animation:float 6s ease-in-out infinite;pointer-events:none}
+.shape-1{width:400px;height:400px;background:rgba(0,245,255,0.07);top:-100px;right:-100px;animation-delay:0s}
+.shape-2{width:300px;height:300px;background:rgba(191,95,255,0.07);bottom:0;left:-100px;animation-delay:2s}
+.shape-3{width:200px;height:200px;background:rgba(255,0,110,0.07);top:50%;left:10%;animation-delay:4s}
+
+/* === FEATURES GRID === */
+.section{padding:80px 0}
+.section-label{font-size:12px;letter-spacing:3px;text-transform:uppercase;color:var(--neon-cyan);margin-bottom:12px}
+.section-title{font-size:clamp(32px,4vw,52px);font-weight:800;letter-spacing:-1px;margin-bottom:16px}
+.section-sub{font-size:17px;color:var(--text2);max-width:560px;line-height:1.6}
+.features-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:24px;margin-top:60px}
+.feature-card{padding:32px;position:relative;overflow:hidden;cursor:pointer;transition:all .3s}
+.feature-card::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,transparent,rgba(255,255,255,0.02));opacity:0;transition:opacity .3s}
+.feature-card:hover::before{opacity:1}
+.feature-card:hover{transform:translateY(-4px);border-color:rgba(0,245,255,0.3)!important;box-shadow:0 20px 60px rgba(0,245,255,0.1)}
+.feature-icon{width:56px;height:56px;border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:24px;margin-bottom:20px}
+.feature-name{font-size:18px;font-weight:700;margin-bottom:8px}
+.feature-desc{font-size:14px;color:var(--text2);line-height:1.6}
+.feature-tag{display:inline-block;margin-top:16px;padding:4px 12px;border-radius:50px;font-size:11px;background:rgba(0,245,255,0.1);color:var(--neon-cyan);border:1px solid rgba(0,245,255,0.2)}
+
+/* === AUTH PAGES === */
+.auth-page{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px}
+.auth-card{width:100%;max-width:440px;padding:48px 40px}
+.auth-title{font-size:28px;font-weight:800;margin-bottom:8px}
+.auth-sub{font-size:14px;color:var(--text2);margin-bottom:36px}
+.form-group{margin-bottom:20px}
+.form-label{display:block;font-size:13px;color:var(--text2);margin-bottom:8px;font-weight:500}
+.form-input{width:100%;padding:14px 16px;background:rgba(255,255,255,0.06);border:1px solid var(--border);border-radius:var(--radius);color:var(--text);font-size:15px;font-family:'Inter',sans-serif;transition:all .3s;outline:none}
+.form-input:focus{border-color:var(--neon-cyan);box-shadow:0 0 0 3px rgba(0,245,255,0.1)}
+.form-input::placeholder{color:var(--text3)}
+.password-wrap{position:relative}
+.password-wrap .form-input{padding-right:48px}
+.toggle-pw{position:absolute;right:14px;top:50%;transform:translateY(-50%);cursor:pointer;color:var(--text2);font-size:16px;background:none;border:none}
+.form-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;font-size:13px}
+.checkbox-row{display:flex;align-items:center;gap:8px;cursor:pointer;color:var(--text2)}
+.checkbox-row input{accent-color:var(--neon-cyan);width:16px;height:16px}
+.form-link{color:var(--neon-cyan);text-decoration:none;cursor:pointer}
+.form-link:hover{text-decoration:underline}
+.auth-divider{text-align:center;color:var(--text3);font-size:13px;margin:24px 0;position:relative}
+.auth-divider::before,.auth-divider::after{content:'';position:absolute;top:50%;width:40%;height:1px;background:var(--border)}
+.auth-divider::before{left:0}.auth-divider::after{right:0}
+.social-btn{width:100%;padding:14px;background:rgba(255,255,255,0.06);border:1px solid var(--border);border-radius:var(--radius);color:var(--text);font-size:14px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:10px;transition:all .3s;margin-bottom:12px;font-family:'Inter',sans-serif}
+.social-btn:hover{background:rgba(255,255,255,0.1);border-color:var(--neon-purple)}
+.error-msg{font-size:12px;color:#ff4444;margin-top:6px;display:none}
+.form-input.error{border-color:#ff4444}
+.success-msg{font-size:13px;color:var(--neon-green);margin-top:12px;display:none}
+
+/* === DASHBOARD === */
+.dashboard{padding:100px 0 60px}
+.dash-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:48px;flex-wrap:wrap;gap:16px}
+.dash-greeting{font-size:32px;font-weight:800}
+.dash-greeting span{font-weight:300}
+.dash-actions{display:flex;gap:12px;align-items:center}
+.notif-btn{width:42px;height:42px;border-radius:50%;background:var(--surface);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:18px;transition:all .3s;position:relative}
+.notif-btn:hover{border-color:var(--neon-cyan);color:var(--neon-cyan)}
+.notif-dot{position:absolute;top:8px;right:8px;width:8px;height:8px;border-radius:50%;background:var(--neon-pink)}
+.dash-grid{display:grid;grid-template-columns:300px 1fr;gap:24px;margin-bottom:24px}
+.profile-card{padding:32px;text-align:center}
+.profile-avatar{width:80px;height:80px;border-radius:50%;background:linear-gradient(135deg,var(--neon-cyan),var(--neon-purple));display:flex;align-items:center;justify-content:center;font-size:28px;font-weight:800;margin:0 auto 16px;position:relative}
+.profile-avatar::after{content:'';position:absolute;inset:-3px;border-radius:50%;border:2px solid transparent;background:linear-gradient(135deg,var(--neon-cyan),var(--neon-purple)) border-box;-webkit-mask:linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0);mask:linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0);-webkit-mask-composite:destination-out;mask-composite:exclude}
+.profile-name{font-size:18px;font-weight:700;margin-bottom:4px}
+.profile-role{font-size:13px;color:var(--text2);margin-bottom:20px}
+.profile-stats{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;border-top:1px solid var(--border);padding-top:20px}
+.p-stat-val{font-size:22px;font-weight:800}
+.p-stat-label{font-size:11px;color:var(--text2);margin-top:2px}
+.tools-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:16px}
+.tool-tile{padding:24px 16px;text-align:center;cursor:pointer;transition:all .3s}
+.tool-tile:hover{transform:translateY(-4px);border-color:rgba(0,245,255,0.3)!important;box-shadow:0 12px 40px rgba(0,245,255,0.1)}
+.tool-tile-icon{font-size:32px;margin-bottom:12px}
+.tool-tile-name{font-size:13px;font-weight:600}
+.dash-bottom{display:grid;grid-template-columns:1fr 1fr;gap:24px}
+.activity-item{display:flex;gap:12px;align-items:flex-start;padding:14px 0;border-bottom:1px solid var(--border)}
+.activity-item:last-child{border-bottom:none}
+.a-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;margin-top:6px}
+.a-text{font-size:14px}
+.a-time{font-size:12px;color:var(--text3);margin-top:2px}
+.progress-item{margin-bottom:20px}
+.progress-header{display:flex;justify-content:space-between;font-size:13px;margin-bottom:8px}
+.progress-bar{height:6px;background:var(--surface2);border-radius:3px;overflow:hidden}
+.progress-fill{height:100%;border-radius:3px;background:linear-gradient(90deg,var(--neon-cyan),var(--neon-purple));transition:width 1s ease}
+.card-title{font-size:16px;font-weight:700;margin-bottom:20px;display:flex;align-items:center;gap:8px}
+
+/* === TOOL PAGES === */
+.tool-page{padding:100px 0 60px}
+.tool-header{margin-bottom:48px}
+.tool-title{font-size:36px;font-weight:800;margin-bottom:8px}
+.tool-sub{font-size:16px;color:var(--text2)}
+.tool-grid{display:grid;grid-template-columns:1fr 1fr;gap:24px}
+.tool-panel{padding:32px}
+.panel-title{font-size:15px;font-weight:700;margin-bottom:20px;display:flex;align-items:center;gap:8px;color:var(--text2)}
+.code-area{width:100%;min-height:300px;padding:16px;background:rgba(0,0,0,0.4);border:1px solid var(--border);border-radius:var(--radius);color:#e0e0e0;font-family:'JetBrains Mono',monospace;font-size:13px;line-height:1.7;resize:vertical;outline:none;transition:border-color .3s}
+.code-area:focus{border-color:var(--neon-cyan)}
+.code-output{background:rgba(0,0,0,0.4);border:1px solid var(--border);border-radius:var(--radius);padding:20px;font-family:'JetBrains Mono',monospace;font-size:13px;line-height:1.7;min-height:300px;color:#e0e0e0;overflow:auto;white-space:pre-wrap;position:relative}
+.output-actions{display:flex;gap:8px;margin-top:12px}
+.select-input{padding:12px 16px;background:rgba(255,255,255,0.06);border:1px solid var(--border);border-radius:var(--radius);color:var(--text);font-size:14px;font-family:'Inter',sans-serif;outline:none;width:100%;cursor:pointer}
+.select-input:focus{border-color:var(--neon-cyan)}
+select option{background:#0d0d2b;color:#e8e8ff}
+.upload-zone{border:2px dashed var(--border);border-radius:var(--radius);padding:40px;text-align:center;cursor:pointer;transition:all .3s}
+.upload-zone:hover{border-color:var(--neon-cyan);background:rgba(0,245,255,0.03)}
+.upload-zone.dragging{border-color:var(--neon-cyan);background:rgba(0,245,255,0.08)}
+.upload-icon{font-size:40px;margin-bottom:12px}
+.upload-text{font-size:14px;color:var(--text2)}
+.upload-text strong{color:var(--neon-cyan)}
+.score-ring{width:120px;height:120px;position:relative;flex-shrink:0}
+.score-ring svg{transform:rotate(-90deg)}
+.score-num{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:28px;font-weight:800}
+.score-row{display:flex;align-items:center;gap:20px;margin-bottom:24px}
+.loading-spinner{display:none;text-align:center;padding:40px}
+.spinner{width:40px;height:40px;border:3px solid var(--border);border-top-color:var(--neon-cyan);border-radius:50%;animation:spin 0.8s linear infinite;margin:0 auto 16px}
+.loading-text{color:var(--text2);font-size:14px}
+.tag-list{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+.tag{padding:4px 12px;border-radius:50px;font-size:12px;background:rgba(0,245,255,0.1);color:var(--neon-cyan);border:1px solid rgba(0,245,255,0.2)}
+.tag.missing{background:rgba(255,0,110,0.1);color:var(--neon-pink);border-color:rgba(255,0,110,0.2)}
+.tag.warning{background:rgba(255,165,0,0.1);color:#ffaa00;border-color:rgba(255,165,0,0.2)}
+.result-section{margin-bottom:24px;padding-bottom:24px;border-bottom:1px solid var(--border)}
+.result-section:last-child{border-bottom:none}
+.result-label{font-size:12px;letter-spacing:2px;text-transform:uppercase;color:var(--text3);margin-bottom:8px}
+.result-value{font-size:15px;line-height:1.6}
+
+/* === ROADMAP === */
+.roadmap-btn-group{display:flex;flex-wrap:wrap;gap:12px;margin-bottom:32px}
+.road-btn{padding:10px 24px;border-radius:50px;font-size:13px;font-weight:600;cursor:pointer;background:var(--surface);border:1px solid var(--border);color:var(--text2);transition:all .3s}
+.road-btn.active,.road-btn:hover{background:rgba(0,245,255,0.1);border-color:var(--neon-cyan);color:var(--neon-cyan)}
+.roadmap-timeline{position:relative;padding-left:32px}
+.roadmap-timeline::before{content:'';position:absolute;left:8px;top:0;bottom:0;width:2px;background:linear-gradient(180deg,var(--neon-cyan),var(--neon-purple),var(--neon-pink))}
+.roadmap-step{position:relative;margin-bottom:32px}
+.roadmap-step::before{content:'';position:absolute;left:-27px;top:20px;width:14px;height:14px;border-radius:50%;background:var(--neon-cyan);box-shadow:0 0 15px var(--neon-cyan)}
+.step-card{padding:24px}
+.step-phase{font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--neon-cyan);margin-bottom:6px}
+.step-title{font-size:17px;font-weight:700;margin-bottom:8px}
+.step-desc{font-size:14px;color:var(--text2);line-height:1.6}
+.step-resources{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px}
+.resource-link{font-size:12px;padding:3px 10px;background:rgba(191,95,255,0.1);color:var(--neon-purple);border:1px solid rgba(191,95,255,0.2);border-radius:50px;cursor:pointer;transition:all .3s}
+.resource-link:hover{background:rgba(191,95,255,0.2)}
+
+/* === INTERVIEW === */
+.interview-setup,.interview-active,.interview-result{padding:32px}
+.role-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:12px;margin:20px 0}
+.role-card{padding:16px;border-radius:var(--radius);background:var(--surface);border:1px solid var(--border);cursor:pointer;text-align:center;transition:all .3s}
+.role-card:hover,.role-card.selected{background:rgba(0,245,255,0.1);border-color:var(--neon-cyan)}
+.role-icon{font-size:24px;margin-bottom:8px}
+.role-name{font-size:13px;font-weight:600}
+.interview-q{font-size:20px;font-weight:700;line-height:1.5;margin-bottom:24px;padding:24px;background:rgba(0,245,255,0.05);border-left:3px solid var(--neon-cyan);border-radius:0 var(--radius) var(--radius) 0}
+.timer{font-size:36px;font-weight:800;text-align:center;color:var(--neon-cyan);margin-bottom:20px;font-family:'JetBrains Mono',monospace}
+.answer-area{width:100%;min-height:160px;padding:16px;background:rgba(255,255,255,0.05);border:1px solid var(--border);border-radius:var(--radius);color:var(--text);font-size:14px;font-family:'Inter',sans-serif;resize:vertical;outline:none;line-height:1.6}
+.answer-area:focus{border-color:var(--neon-cyan)}
+.voice-btn{width:60px;height:60px;border-radius:50%;background:linear-gradient(135deg,var(--neon-cyan),var(--neon-purple));border:none;display:flex;align-items:center;justify-content:center;font-size:24px;cursor:pointer;transition:all .3s;margin:0 auto}
+.voice-btn:hover{box-shadow:0 0 30px rgba(0,245,255,0.4);transform:scale(1.05)}
+.voice-btn.recording{animation:pulse-record 1s infinite}
+@keyframes pulse-record{0%{box-shadow:0 0 0 0 rgba(255,0,110,0.4)}100%{box-shadow:0 0 0 20px rgba(255,0,110,0)}}
+.score-card{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin:24px 0}
+.score-item{padding:20px;text-align:center;border-radius:var(--radius);background:var(--surface)}
+.score-val{font-size:32px;font-weight:800}
+.score-cat{font-size:12px;color:var(--text2);margin-top:4px}
+
+/* === COMMUNITY === */
+.community-grid{display:grid;grid-template-columns:1fr 320px;gap:24px}
+.post-card{padding:24px;margin-bottom:16px;transition:all .3s}
+.post-card:hover{border-color:rgba(191,95,255,0.3)!important}
+.post-meta{display:flex;align-items:center;gap:12px;margin-bottom:16px}
+.post-avatar{width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,var(--neon-cyan),var(--neon-purple));display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px;flex-shrink:0}
+.post-author{font-size:14px;font-weight:600}
+.post-time{font-size:12px;color:var(--text3)}
+.post-body{font-size:15px;line-height:1.7;margin-bottom:16px}
+.post-actions{display:flex;gap:16px}
+.post-action{display:flex;align-items:center;gap:6px;font-size:13px;color:var(--text2);cursor:pointer;padding:6px 12px;border-radius:50px;transition:all .3s}
+.post-action:hover{color:var(--neon-pink);background:rgba(255,0,110,0.08)}
+.post-image{width:100%;border-radius:var(--radius);margin-bottom:16px;display:none}
+.new-post{padding:24px;margin-bottom:24px}
+.post-input{width:100%;padding:14px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);color:var(--text);font-size:14px;font-family:'Inter',sans-serif;resize:none;outline:none;height:80px;transition:border-color .3s}
+.post-input:focus{border-color:var(--neon-purple)}
+.post-toolbar{display:flex;justify-content:space-between;align-items:center;margin-top:12px}
+.post-tools{display:flex;gap:8px}
+.post-tool{width:34px;height:34px;border-radius:8px;background:var(--surface);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:16px;transition:all .3s}
+.post-tool:hover{border-color:var(--neon-purple);color:var(--neon-purple)}
+
+/* === LEADERBOARD === */
+.lb-table{width:100%;border-collapse:collapse}
+.lb-table th{font-size:12px;letter-spacing:2px;text-transform:uppercase;color:var(--text3);text-align:left;padding:12px 16px;border-bottom:1px solid var(--border)}
+.lb-table td{padding:16px;border-bottom:1px solid rgba(255,255,255,0.04);font-size:14px}
+.lb-rank{font-size:18px;font-weight:800;font-family:'JetBrains Mono',monospace}
+.lb-rank.gold{color:#ffd700;text-shadow:0 0 20px rgba(255,215,0,0.5)}
+.lb-rank.silver{color:#c0c0c0}
+.lb-rank.bronze{color:#cd7f32}
+.lb-user{display:flex;align-items:center;gap:12px}
+.lb-avatar{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;flex-shrink:0}
+.badge-list{display:flex;gap:4px;flex-wrap:wrap}
+.badge{padding:2px 8px;border-radius:50px;font-size:11px}
+.xp-bar{height:4px;background:var(--surface2);border-radius:2px;margin-top:4px;width:100px}
+.xp-fill{height:100%;border-radius:2px;background:linear-gradient(90deg,var(--neon-cyan),var(--neon-purple))}
+
+/* === HACKATHONS === */
+.hack-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:24px}
+.hack-card{padding:32px;overflow:hidden;position:relative}
+.hack-status{display:inline-block;padding:4px 12px;border-radius:50px;font-size:11px;font-weight:600;letter-spacing:1px;text-transform:uppercase;margin-bottom:16px}
+.hack-status.live{background:rgba(57,255,20,0.1);color:var(--neon-green);border:1px solid rgba(57,255,20,0.2)}
+.hack-status.upcoming{background:rgba(0,245,255,0.1);color:var(--neon-cyan);border:1px solid rgba(0,245,255,0.2)}
+.hack-status.ended{background:rgba(255,255,255,0.06);color:var(--text2);border:1px solid var(--border)}
+.hack-title{font-size:20px;font-weight:700;margin-bottom:8px}
+.hack-org{font-size:13px;color:var(--text2);margin-bottom:20px}
+.hack-info{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:20px}
+.hack-info-item label{font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:1px;display:block;margin-bottom:2px}
+.hack-info-item span{font-size:14px;font-weight:600}
+.hack-prize{font-size:24px;font-weight:800;color:var(--neon-green)}
+
+/* === TOAST === */
+.toast-container{position:fixed;top:24px;right:24px;z-index:9999;display:flex;flex-direction:column;gap:8px}
+.toast{padding:14px 20px;border-radius:var(--radius);font-size:14px;display:flex;align-items:center;gap:10px;animation:slide-in .3s ease;min-width:280px;box-shadow:0 8px 32px rgba(0,0,0,0.4)}
+.toast.success{background:rgba(57,255,20,0.1);border:1px solid rgba(57,255,20,0.3);color:var(--neon-green)}
+.toast.error{background:rgba(255,0,110,0.1);border:1px solid rgba(255,0,110,0.3);color:var(--neon-pink)}
+.toast.info{background:rgba(0,245,255,0.1);border:1px solid rgba(0,245,255,0.3);color:var(--neon-cyan)}
+@keyframes slide-in{from{transform:translateX(100%);opacity:0}to{transform:translateX(0);opacity:1}}
+
+/* === DARK MODE TOGGLE === */
+.dm-toggle{width:52px;height:28px;background:var(--surface);border:1px solid var(--border);border-radius:50px;cursor:pointer;position:relative;transition:all .3s}
+.dm-toggle.on{background:rgba(0,245,255,0.2);border-color:var(--neon-cyan)}
+.dm-thumb{position:absolute;top:3px;left:3px;width:20px;height:20px;border-radius:50%;background:var(--text2);transition:all .3s}
+.dm-toggle.on .dm-thumb{left:26px;background:var(--neon-cyan)}
+
+/* === ANIMATIONS === */
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-20px)}}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes fade-up{from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:translateY(0)}}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(0,245,255,0.3)}50%{box-shadow:0 0 30px 10px rgba(0,245,255,0.1)}}
+@keyframes glow{0%,100%{text-shadow:0 0 20px rgba(0,245,255,0.3)}50%{text-shadow:0 0 40px rgba(0,245,255,0.7),0 0 80px rgba(191,95,255,0.3)}}
+.animate-fade-up{animation:fade-up .6s ease both}
+.delay-1{animation-delay:.1s}.delay-2{animation-delay:.2s}.delay-3{animation-delay:.3s}
+
+/* === MOBILE === */
+@media(max-width:768px){
+  .nav-links{display:none}
+  .hero-stats{grid-template-columns:1fr 1fr}
+  .features-grid{grid-template-columns:1fr}
+  .tool-grid{grid-template-columns:1fr}
+  .dash-grid{grid-template-columns:1fr}
+  .dash-bottom{grid-template-columns:1fr}
+  .community-grid{grid-template-columns:1fr}
+  .score-card{grid-template-columns:1fr 1fr}
+  .auth-card{padding:32px 24px}
+  .hero-title{font-size:48px}
+  .section-title{font-size:32px}
+}
+
+/* === MODAL === */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:2000;display:none;align-items:center;justify-content:center;backdrop-filter:blur(8px)}
+.modal-overlay.open{display:flex}
+.modal-card{background:#0d0d2b;border:1px solid var(--border);border-radius:var(--radius-lg);padding:40px;max-width:500px;width:100%;margin:24px;position:relative;max-height:90vh;overflow-y:auto}
+.modal-close{position:absolute;top:16px;right:16px;cursor:pointer;font-size:20px;color:var(--text2);background:none;border:none}
+.modal-close:hover{color:var(--text)}
+
+/* === TECH NEWS === */
+.news-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:20px}
+.news-card{padding:24px;cursor:pointer;transition:all .3s}
+.news-card:hover{transform:translateY(-4px);border-color:rgba(0,245,255,0.3)!important}
+.news-cat{font-size:11px;letter-spacing:2px;text-transform:uppercase;margin-bottom:10px}
+.news-title{font-size:17px;font-weight:700;margin-bottom:8px;line-height:1.4}
+.news-snippet{font-size:13px;color:var(--text2);line-height:1.6}
+.news-meta{display:flex;gap:12px;margin-top:14px;font-size:12px;color:var(--text3)}
+
+/* === PROJECT GEN === */
+.proj-idea{padding:24px;margin-bottom:16px;cursor:pointer;transition:all .3s;position:relative;overflow:hidden}
+.proj-idea::after{content:'→';position:absolute;right:24px;top:50%;transform:translateY(-50%);font-size:20px;color:var(--neon-cyan);opacity:0;transition:all .3s}
+.proj-idea:hover{border-color:rgba(0,245,255,0.3)!important;padding-right:48px}
+.proj-idea:hover::after{opacity:1;right:20px}
+.proj-difficulty{display:inline-block;padding:3px 10px;border-radius:50px;font-size:11px;margin-bottom:10px}
+.proj-name{font-size:18px;font-weight:700;margin-bottom:6px}
+.proj-desc{font-size:14px;color:var(--text2)}
+.proj-stack{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px}
+
+/* === SIDEBAR NAV === */
+.sidebar{position:fixed;left:0;top:0;width:240px;height:100vh;background:rgba(5,5,16,0.95);border-right:1px solid var(--border);z-index:900;padding:80px 0 24px;overflow-y:auto;transform:translateX(-100%);transition:transform .3s}
+.sidebar.open{transform:translateX(0)}
+.sidebar-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:890;display:none}
+.sidebar-overlay.open{display:block}
+.sidebar-section{padding:8px 16px;font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--text3);margin-top:16px}
+.sidebar-item{display:flex;align-items:center;gap:12px;padding:12px 20px;cursor:pointer;color:var(--text2);transition:all .3s;font-size:14px}
+.sidebar-item:hover,.sidebar-item.active{color:var(--neon-cyan);background:rgba(0,245,255,0.05)}
+.sidebar-icon{font-size:18px;flex-shrink:0}
+
+/* === COUNTER ANIMATION === */
+.counter{display:inline-block}
+
+/* === GITHUB === */
+.repo-stat{display:flex;align-items:center;gap:8px;font-size:14px;color:var(--text2)}
+.repo-stat strong{color:var(--text);font-size:18px;font-weight:700}
+.lang-bar{display:flex;height:8px;border-radius:4px;overflow:hidden;margin:12px 0}
+.lang-segment{height:100%;transition:width .5s ease}
+.lang-legend{display:flex;flex-wrap:wrap;gap:12px;margin-top:8px}
+.lang-item{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--text2)}
+.lang-dot{width:10px;height:10px;border-radius:50%}
+</style>
+</head>
+<body>
+
+<canvas id="particles-canvas"></canvas>
+
+<!-- TOAST -->
+<div class="toast-container" id="toastContainer"></div>
+
+<!-- MODAL -->
+<div class="modal-overlay" id="modal">
+  <div class="modal-card glass-dark">
+    <button class="modal-close" onclick="closeModal()">✕</button>
+    <div id="modal-content"></div>
+  </div>
+</div>
+
+<!-- NAVBAR -->
+<nav id="navbar">
+  <div class="container">
+    <div class="nav-inner">
+      <div class="logo gradient-text" onclick="showPage('landing')">DevVerse<span> AI</span></div>
+      <ul class="nav-links" id="navLinks">
+        <li><a onclick="showPage('landing');scrollToSection('features')">Features</a></li>
+        <li><a onclick="showPage('landing');scrollToSection('community-preview')">Community</a></li>
+        <li><a onclick="showPage('hackathons')">Hackathons</a></li>
+        <li><a onclick="showPage('leaderboard')">Leaderboard</a></li>
+      </ul>
+      <div class="nav-actions" id="navActions">
+        <button class="btn btn-ghost btn-sm" onclick="showPage('login')">Login</button>
+        <button class="btn btn-primary btn-sm" onclick="showPage('signup')">Sign Up</button>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<!-- SIDEBAR (dashboard nav) -->
+<div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
+<div class="sidebar" id="sidebar">
+  <div class="logo gradient-text" style="padding:0 20px 24px;font-size:18px;border-bottom:1px solid var(--border)">DevVerse <span>AI</span></div>
+  <div class="sidebar-section">MAIN</div>
+  <div class="sidebar-item active" onclick="showPage('dashboard');closeSidebar()"><span class="sidebar-icon">⌂</span> Dashboard</div>
+  <div class="sidebar-section">AI TOOLS</div>
+  <div class="sidebar-item" onclick="showPage('code-gen');closeSidebar()"><span class="sidebar-icon">⌨</span> Code Generator</div>
+  <div class="sidebar-item" onclick="showPage('github');closeSidebar()"><span class="sidebar-icon">⬡</span> GitHub Analyzer</div>
+  <div class="sidebar-item" onclick="showPage('bug-finder');closeSidebar()"><span class="sidebar-icon">🐛</span> Bug Finder</div>
+  <div class="sidebar-item" onclick="showPage('resume');closeSidebar()"><span class="sidebar-icon">📄</span> Resume Analyzer</div>
+  <div class="sidebar-item" onclick="showPage('career');closeSidebar()"><span class="sidebar-icon">🎯</span> Career Advisor</div>
+  <div class="sidebar-item" onclick="showPage('interview');closeSidebar()"><span class="sidebar-icon">🎤</span> Mock Interview</div>
+  <div class="sidebar-item" onclick="showPage('roadmap');closeSidebar()"><span class="sidebar-icon">🗺</span> Learning Roadmap</div>
+  <div class="sidebar-item" onclick="showPage('project-gen');closeSidebar()"><span class="sidebar-icon">💡</span> Project Generator</div>
+  <div class="sidebar-item" onclick="showPage('tech-news');closeSidebar()"><span class="sidebar-icon">📡</span> Tech News Hub</div>
+  <div class="sidebar-section">COMMUNITY</div>
+  <div class="sidebar-item" onclick="showPage('community');closeSidebar()"><span class="sidebar-icon">💬</span> Forum</div>
+  <div class="sidebar-item" onclick="showPage('hackathons');closeSidebar()"><span class="sidebar-icon">🏆</span> Hackathons</div>
+  <div class="sidebar-item" onclick="showPage('leaderboard');closeSidebar()"><span class="sidebar-icon">📊</span> Leaderboard</div>
+  <div style="padding:20px;margin-top:auto;border-top:1px solid var(--border)">
+    <button class="btn btn-danger btn-sm" style="width:100%" onclick="logout()">Logout</button>
+  </div>
+</div>
+
+<!-- ==================== LANDING PAGE ==================== -->
+<div id="page-landing" class="page active">
+  <!-- HERO -->
+  <section id="hero">
+    <div class="shape shape-1"></div>
+    <div class="shape shape-2"></div>
+    <div class="shape shape-3"></div>
+    <div class="container">
+      <div class="hero-badge animate-fade-up">✦ The Future of Developer Tooling is Here</div>
+      <h1 class="hero-title animate-fade-up delay-1">
+        <span class="gradient-text">Dev</span>Verse<br>
+        <span class="neon-cyan" style="animation:glow 3s ease-in-out infinite">AI</span>
+      </h1>
+      <p class="hero-sub animate-fade-up delay-2">The all-in-one AI platform that supercharges how you code, learn, grow, and collaborate. Powered by cutting-edge AI. Built for tomorrow's developers.</p>
+      <div class="hero-actions animate-fade-up delay-3">
+        <button class="btn btn-primary btn-lg" onclick="showPage('signup')">🚀 Start Free</button>
+        <button class="btn btn-outline btn-lg" onclick="scrollToSection('features')">Explore Features</button>
+      </div>
+      <div class="hero-stats animate-fade-up" style="animation-delay:.4s">
+        <div class="stat-card glass">
+          <div class="stat-num neon-cyan"><span class="counter" data-target="50000">0</span>+</div>
+          <div class="stat-label">Developers</div>
+        </div>
+        <div class="stat-card glass">
+          <div class="stat-num neon-purple"><span class="counter" data-target="1200000">0</span>+</div>
+          <div class="stat-label">AI Queries</div>
+        </div>
+        <div class="stat-card glass">
+          <div class="stat-num neon-green"><span class="counter" data-target="99">0</span>%</div>
+          <div class="stat-label">Uptime</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FEATURES -->
+  <section class="section" id="features">
+    <div class="container">
+      <div class="section-label">WHAT WE OFFER</div>
+      <h2 class="section-title">12 Powerful <span class="gradient-text">AI Tools</span></h2>
+      <p class="section-sub">Everything a modern developer needs, unified in one platform. From code generation to career growth.</p>
+      <div class="features-grid">
+        <div class="feature-card glass" onclick="requireAuth('code-gen')">
+          <div class="feature-icon" style="background:rgba(0,245,255,0.1)">⌨</div>
+          <div class="feature-name">AI Code Generator</div>
+          <div class="feature-desc">Describe what you want in plain English. Get production-ready code in any language instantly.</div>
+          <span class="feature-tag">OpenAI GPT-4</span>
+        </div>
+        <div class="feature-card glass" onclick="requireAuth('github')">
+          <div class="feature-icon" style="background:rgba(191,95,255,0.1)">⬡</div>
+          <div class="feature-name">GitHub Repo Analyzer</div>
+          <div class="feature-desc">Paste any GitHub URL and get deep AI insights on code quality, structure, and contributions.</div>
+          <span class="feature-tag">GitHub API</span>
+        </div>
+        <div class="feature-card glass" onclick="requireAuth('bug-finder')">
+          <div class="feature-icon" style="background:rgba(255,0,110,0.1)">🐛</div>
+          <div class="feature-name">AI Bug Finder</div>
+          <div class="feature-desc">Upload your code and let AI detect bugs, explain root causes, and generate corrected versions.</div>
+          <span class="feature-tag">Multi-language</span>
+        </div>
+        <div class="feature-card glass" onclick="requireAuth('resume')">
+          <div class="feature-icon" style="background:rgba(57,255,20,0.1)">📄</div>
+          <div class="feature-name">AI Resume Analyzer</div>
+          <div class="feature-desc">Get your ATS score, skill gap analysis, and actionable suggestions to land your dream job.</div>
+          <span class="feature-tag">ATS Optimizer</span>
+        </div>
+        <div class="feature-card glass" onclick="requireAuth('career')">
+          <div class="feature-icon" style="background:rgba(255,165,0,0.1)">🎯</div>
+          <div class="feature-name">AI Career Advisor</div>
+          <div class="feature-desc">Get a personalized career roadmap based on your skills, interests, and aspirations.</div>
+          <span class="feature-tag">Personalized</span>
+        </div>
+        <div class="feature-card glass" onclick="requireAuth('interview')">
+          <div class="feature-icon" style="background:rgba(0,245,255,0.1)">🎤</div>
+          <div class="feature-name">AI Mock Interview</div>
+          <div class="feature-desc">Practice with AI-powered interviews, get real-time feedback, and track your performance.</div>
+          <span class="feature-tag">Voice Enabled</span>
+        </div>
+        <div class="feature-card glass" onclick="requireAuth('roadmap')">
+          <div class="feature-icon" style="background:rgba(191,95,255,0.1)">🗺</div>
+          <div class="feature-name">Learning Roadmap</div>
+          <div class="feature-desc">Visual, step-by-step learning paths for Web Dev, AI/ML, DevOps, Cloud, and more.</div>
+          <span class="feature-tag">6 Domains</span>
+        </div>
+        <div class="feature-card glass" onclick="requireAuth('project-gen')">
+          <div class="feature-icon" style="background:rgba(255,0,110,0.1)">💡</div>
+          <div class="feature-name">AI Project Generator</div>
+          <div class="feature-desc">Get unique project ideas with architecture, tech stack, database schema, and starter code.</div>
+          <span class="feature-tag">Full Blueprint</span>
+        </div>
+        <div class="feature-card glass" onclick="requireAuth('tech-news')">
+          <div class="feature-icon" style="background:rgba(57,255,20,0.1)">📡</div>
+          <div class="feature-name">Tech News Hub</div>
+          <div class="feature-desc">AI-curated developer news, trends, and insights delivered in real-time.</div>
+          <span class="feature-tag">Real-time</span>
+        </div>
+        <div class="feature-card glass" onclick="requireAuth('community')">
+          <div class="feature-icon" style="background:rgba(0,245,255,0.1)">💬</div>
+          <div class="feature-name">Community Forum</div>
+          <div class="feature-desc">Connect with thousands of developers, share projects, ask questions, and grow together.</div>
+          <span class="feature-tag">50K+ Members</span>
+        </div>
+        <div class="feature-card glass" onclick="showPage('hackathons')">
+          <div class="feature-icon" style="background:rgba(191,95,255,0.1)">🏆</div>
+          <div class="feature-name">Hackathons</div>
+          <div class="feature-desc">Join curated hackathons, form teams, and compete for prizes and recognition.</div>
+          <span class="feature-tag">Win Prizes</span>
+        </div>
+        <div class="feature-card glass" onclick="showPage('leaderboard')">
+          <div class="feature-icon" style="background:rgba(255,215,0,0.1)">📊</div>
+          <div class="feature-name">Dev Leaderboards</div>
+          <div class="feature-desc">Compete globally, earn XP, collect badges, and rise through the ranks.</div>
+          <span class="feature-tag">Global Ranks</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- COMMUNITY PREVIEW -->
+  <section class="section" id="community-preview">
+    <div class="container">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:center" class="community-split">
+        <div>
+          <div class="section-label">COMMUNITY</div>
+          <h2 class="section-title">Built by devs, <span class="gradient-text">for devs</span></h2>
+          <p style="font-size:17px;color:var(--text2);line-height:1.7;margin-bottom:32px">Join a thriving community of 50,000+ developers. Share your work, ask questions, collaborate on open source, and level up your career together.</p>
+          <button class="btn btn-primary" onclick="requireAuth('community')">Join Community →</button>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+          <div class="glass" style="padding:24px;border-radius:16px">
+            <div style="font-size:32px;margin-bottom:8px">🔥</div>
+            <div style="font-size:24px;font-weight:800;color:var(--neon-cyan)">1,247</div>
+            <div style="font-size:13px;color:var(--text2)">Posts today</div>
+          </div>
+          <div class="glass" style="padding:24px;border-radius:16px">
+            <div style="font-size:32px;margin-bottom:8px">⭐</div>
+            <div style="font-size:24px;font-weight:800;color:var(--neon-purple)">8,432</div>
+            <div style="font-size:13px;color:var(--text2)">Projects shared</div>
+          </div>
+          <div class="glass" style="padding:24px;border-radius:16px">
+            <div style="font-size:32px;margin-bottom:8px">🤝</div>
+            <div style="font-size:24px;font-weight:800;color:var(--neon-green)">342</div>
+            <div style="font-size:13px;color:var(--text2)">Open collabs</div>
+          </div>
+          <div class="glass" style="padding:24px;border-radius:16px">
+            <div style="font-size:32px;margin-bottom:8px">🎯</div>
+            <div style="font-size:24px;font-weight:800;color:var(--neon-pink)">89%</div>
+            <div style="font-size:13px;color:var(--text2)">Placement rate</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="section" style="text-align:center">
+    <div class="container">
+      <div class="glass" style="padding:80px 40px;position:relative;overflow:hidden">
+        <div class="shape" style="width:300px;height:300px;background:rgba(191,95,255,0.1);top:-100px;right:-100px;filter:blur(60px)"></div>
+        <div class="shape" style="width:200px;height:200px;background:rgba(0,245,255,0.1);bottom:-50px;left:-50px;filter:blur(60px)"></div>
+        <h2 style="font-size:52px;font-weight:900;letter-spacing:-2px;margin-bottom:16px">Ready to build the <span class="gradient-text">future?</span></h2>
+        <p style="font-size:18px;color:var(--text2);margin-bottom:40px">Join 50,000+ developers already building smarter with DevVerse AI.</p>
+        <div style="display:flex;gap:16px;justify-content:center;flex-wrap:wrap">
+          <button class="btn btn-primary btn-lg" onclick="showPage('signup')">🚀 Start Free — No Card Needed</button>
+          <button class="btn btn-outline btn-lg" onclick="showPage('login')">Sign In</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer style="padding:48px 0;border-top:1px solid var(--border);text-align:center">
+    <div class="container">
+      <div class="logo gradient-text" style="font-size:20px;margin-bottom:12px;display:inline-block">DevVerse <span style="font-weight:300">AI</span></div>
+      <p style="font-size:13px;color:var(--text3)">© 2025 DevVerse AI. Built with ❤️ for the developer community.</p>
+    </div>
+  </footer>
+</div>
+
+<!-- ==================== LOGIN PAGE ==================== -->
+<div id="page-login" class="page">
+  <div class="auth-page">
+    <div class="auth-card glass">
+      <div class="logo gradient-text" style="font-size:20px;margin-bottom:32px;cursor:pointer" onclick="showPage('landing')">DevVerse AI</div>
+      <h2 class="auth-title">Welcome back</h2>
+      <p class="auth-sub">Sign in to your DevVerse AI account</p>
+      
+      <div class="form-group">
+        <label class="form-label">Email Address</label>
+        <input type="email" class="form-input" id="login-email" placeholder="you@example.com" autocomplete="email">
+        <div class="error-msg" id="login-email-error">Please enter a valid email address.</div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Password</label>
+        <div class="password-wrap">
+          <input type="password" class="form-input" id="login-password" placeholder="Enter your password" autocomplete="current-password">
+          <button class="toggle-pw" onclick="togglePw('login-password',this)" type="button">👁</button>
+        </div>
+        <div class="error-msg" id="login-pw-error">Incorrect email or password.</div>
+      </div>
+      <div class="form-row">
+        <label class="checkbox-row"><input type="checkbox" id="remember-me"> Remember me</label>
+        <a class="form-link" onclick="showPage('forgot')">Forgot password?</a>
+      </div>
+      <button class="btn btn-primary" style="width:100%;justify-content:center;padding:16px" onclick="doLogin()">Sign In</button>
+      <div class="loading-spinner" id="login-spinner" style="padding:20px 0">
+        <div class="spinner" style="width:28px;height:28px;border-width:2px;margin:0 auto"></div>
+      </div>
+      <div class="auth-divider">or continue with</div>
+      <button class="social-btn" onclick="socialLogin('Google')">
+        <svg width="18" height="18" viewBox="0 0 24 24"><path fill="#4285f4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34a853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#fbbc05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#ea4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
+        Continue with Google
+      </button>
+      <button class="social-btn" onclick="socialLogin('GitHub')">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="var(--text)"><path d="M12 2C6.477 2 2 6.477 2 12c0 4.42 2.865 8.17 6.839 9.49.5.092.682-.217.682-.482 0-.237-.008-.866-.013-1.7-2.782.604-3.369-1.34-3.369-1.34-.454-1.156-1.11-1.463-1.11-1.463-.908-.62.069-.608.069-.608 1.003.07 1.531 1.03 1.531 1.03.892 1.529 2.341 1.087 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.11-4.555-4.943 0-1.091.39-1.984 1.029-2.683-.103-.253-.446-1.27.098-2.647 0 0 .84-.269 2.75 1.025A9.578 9.578 0 0112 6.836c.85.004 1.705.114 2.504.336 1.909-1.294 2.747-1.025 2.747-1.025.546 1.377.202 2.394.1 2.647.64.699 1.028 1.592 1.028 2.683 0 3.842-2.339 4.687-4.566 4.935.359.309.678.919.678 1.852 0 1.336-.012 2.415-.012 2.743 0 .267.18.578.688.48C19.138 20.167 22 16.418 22 12c0-5.523-4.477-10-10-10z"/></svg>
+        Continue with GitHub
+      </button>
+      <p style="text-align:center;font-size:14px;color:var(--text2);margin-top:24px">Don't have an account? <a class="form-link" onclick="showPage('signup')">Sign up free</a></p>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== SIGNUP PAGE ==================== -->
+<div id="page-signup" class="page">
+  <div class="auth-page">
+    <div class="auth-card glass">
+      <div class="logo gradient-text" style="font-size:20px;margin-bottom:32px;cursor:pointer" onclick="showPage('landing')">DevVerse AI</div>
+      <h2 class="auth-title">Create account</h2>
+      <p class="auth-sub">Start your AI-powered developer journey today</p>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+        <div class="form-group">
+          <label class="form-label">First Name</label>
+          <input type="text" class="form-input" id="signup-fname" placeholder="Sai">
+          <div class="error-msg" id="fname-error">Required.</div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Last Name</label>
+          <input type="text" class="form-input" id="signup-lname" placeholder="Nandareddy">
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Email Address</label>
+        <input type="email" class="form-input" id="signup-email" placeholder="you@example.com">
+        <div class="error-msg" id="signup-email-error">Enter a valid email.</div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Password</label>
+        <div class="password-wrap">
+          <input type="password" class="form-input" id="signup-password" placeholder="Min. 8 characters">
+          <button class="toggle-pw" onclick="togglePw('signup-password',this)" type="button">👁</button>
+        </div>
+        <div class="error-msg" id="signup-pw-error">Password must be at least 8 characters.</div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Confirm Password</label>
+        <div class="password-wrap">
+          <input type="password" class="form-input" id="signup-confirm" placeholder="Repeat password">
+          <button class="toggle-pw" onclick="togglePw('signup-confirm',this)" type="button">👁</button>
+        </div>
+        <div class="error-msg" id="confirm-error">Passwords do not match.</div>
+      </div>
+      <div style="margin-bottom:24px">
+        <label class="checkbox-row"><input type="checkbox" id="agree-terms"> I agree to the <a class="form-link">Terms of Service</a> and <a class="form-link">Privacy Policy</a></label>
+        <div class="error-msg" id="terms-error" style="display:none;margin-top:6px">You must agree to the terms.</div>
+      </div>
+      <button class="btn btn-primary" style="width:100%;justify-content:center;padding:16px" onclick="doSignup()">Create Account</button>
+      <div class="loading-spinner" id="signup-spinner" style="padding:20px 0">
+        <div class="spinner" style="width:28px;height:28px;border-width:2px;margin:0 auto"></div>
+      </div>
+      <p style="text-align:center;font-size:14px;color:var(--text2);margin-top:24px">Already have an account? <a class="form-link" onclick="showPage('login')">Sign in</a></p>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== FORGOT PASSWORD ==================== -->
+<div id="page-forgot" class="page">
+  <div class="auth-page">
+    <div class="auth-card glass">
+      <div class="logo gradient-text" style="font-size:20px;margin-bottom:32px;cursor:pointer" onclick="showPage('landing')">DevVerse AI</div>
+      <h2 class="auth-title">Reset password</h2>
+      <p class="auth-sub">Enter your email and we'll send you a reset link</p>
+      <div class="form-group">
+        <label class="form-label">Email Address</label>
+        <input type="email" class="form-input" id="reset-email" placeholder="you@example.com">
+        <div class="error-msg" id="reset-email-error">Enter a valid email.</div>
+      </div>
+      <button class="btn btn-primary" style="width:100%;justify-content:center;padding:16px" onclick="doReset()">Send Reset Link</button>
+      <div class="success-msg" id="reset-success" style="margin-top:16px;text-align:center">✅ Reset link sent! Check your inbox.</div>
+      <p style="text-align:center;font-size:14px;color:var(--text2);margin-top:24px"><a class="form-link" onclick="showPage('login')">← Back to login</a></p>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== DASHBOARD ==================== -->
+<div id="page-dashboard" class="page">
+  <div class="dashboard">
+    <div class="container">
+      <div class="dash-header">
+        <div>
+          <div style="font-size:14px;color:var(--text2);margin-bottom:4px">Good morning ☀️</div>
+          <div class="dash-greeting">Welcome, <span class="gradient-text" id="dash-username">Developer</span></div>
+        </div>
+        <div class="dash-actions">
+          <div class="dm-toggle on" id="dmToggle" onclick="toggleDarkMode()"><div class="dm-thumb"></div></div>
+          <div class="notif-btn" onclick="showNotifications()">🔔<span class="notif-dot"></span></div>
+          <button class="btn btn-ghost btn-sm" onclick="toggleSidebar()">☰ Menu</button>
+          <button class="btn btn-danger btn-sm" onclick="logout()">Logout</button>
+        </div>
+      </div>
+
+      <div class="dash-grid">
+        <div class="profile-card glass">
+          <div class="profile-avatar" id="dash-avatar">SN</div>
+          <div class="profile-name" id="dash-name">Sai Nandareddy</div>
+          <div class="profile-role">CS Student · GITAM University</div>
+          <div style="display:flex;gap:8px;justify-content:center;margin-bottom:20px;flex-wrap:wrap">
+            <span class="tag">Python</span><span class="tag">SQL</span><span class="tag">Power BI</span>
+          </div>
+          <div class="profile-stats">
+            <div><div class="p-stat-val neon-cyan">42</div><div class="p-stat-label">Projects</div></div>
+            <div><div class="p-stat-val neon-purple">1.2K</div><div class="p-stat-label">XP</div></div>
+            <div><div class="p-stat-val neon-green">#78</div><div class="p-stat-label">Rank</div></div>
+          </div>
+        </div>
+        <div>
+          <div class="card-title">🛠 AI Tools</div>
+          <div class="tools-grid">
+            <div class="tool-tile glass" onclick="showPage('code-gen')"><div class="tool-tile-icon">⌨</div><div class="tool-tile-name">Code Gen</div></div>
+            <div class="tool-tile glass" onclick="showPage('github')"><div class="tool-tile-icon">⬡</div><div class="tool-tile-name">GitHub</div></div>
+            <div class="tool-tile glass" onclick="showPage('bug-finder')"><div class="tool-tile-icon">🐛</div><div class="tool-tile-name">Bug Finder</div></div>
+            <div class="tool-tile glass" onclick="showPage('resume')"><div class="tool-tile-icon">📄</div><div class="tool-tile-name">Resume</div></div>
+            <div class="tool-tile glass" onclick="showPage('career')"><div class="tool-tile-icon">🎯</div><div class="tool-tile-name">Career</div></div>
+            <div class="tool-tile glass" onclick="showPage('interview')"><div class="tool-tile-icon">🎤</div><div class="tool-tile-name">Interview</div></div>
+            <div class="tool-tile glass" onclick="showPage('roadmap')"><div class="tool-tile-icon">🗺</div><div class="tool-tile-name">Roadmap</div></div>
+            <div class="tool-tile glass" onclick="showPage('project-gen')"><div class="tool-tile-icon">💡</div><div class="tool-tile-name">Projects</div></div>
+            <div class="tool-tile glass" onclick="showPage('tech-news')"><div class="tool-tile-icon">📡</div><div class="tool-tile-name">News Hub</div></div>
+            <div class="tool-tile glass" onclick="showPage('community')"><div class="tool-tile-icon">💬</div><div class="tool-tile-name">Forum</div></div>
+            <div class="tool-tile glass" onclick="showPage('hackathons')"><div class="tool-tile-icon">🏆</div><div class="tool-tile-name">Hackathons</div></div>
+            <div class="tool-tile glass" onclick="showPage('leaderboard')"><div class="tool-tile-icon">📊</div><div class="tool-tile-name">Ranks</div></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="dash-bottom">
+        <div class="glass" style="padding:28px">
+          <div class="card-title">📋 Recent Activity</div>
+          <div id="activity-list">
+            <div class="activity-item"><div class="a-dot" style="background:var(--neon-cyan)"></div><div><div class="a-text">Generated Python web scraper with Code AI</div><div class="a-time">2 hours ago</div></div></div>
+            <div class="activity-item"><div class="a-dot" style="background:var(--neon-purple)"></div><div><div class="a-text">Analyzed GitHub repo: tensorflow/tensorflow</div><div class="a-time">5 hours ago</div></div></div>
+            <div class="activity-item"><div class="a-dot" style="background:var(--neon-green)"></div><div><div class="a-text">Resume ATS Score: 84/100 — Great!</div><div class="a-time">Yesterday</div></div></div>
+            <div class="activity-item"><div class="a-dot" style="background:var(--neon-pink)"></div><div><div class="a-text">Completed Mock Interview — Backend Engineer</div><div class="a-time">2 days ago</div></div></div>
+            <div class="activity-item"><div class="a-dot" style="background:#ffaa00"></div><div><div class="a-text">Posted question in Community Forum</div><div class="a-time">3 days ago</div></div></div>
+          </div>
+        </div>
+        <div class="glass" style="padding:28px">
+          <div class="card-title">📈 Progress Tracker</div>
+          <div class="progress-item">
+            <div class="progress-header"><span>Python Skills</span><span class="neon-cyan">78%</span></div>
+            <div class="progress-bar"><div class="progress-fill" style="width:78%"></div></div>
+          </div>
+          <div class="progress-item">
+            <div class="progress-header"><span>SQL Mastery</span><span class="neon-purple">65%</span></div>
+            <div class="progress-bar"><div class="progress-fill" style="width:65%;background:linear-gradient(90deg,var(--neon-purple),var(--neon-pink))"></div></div>
+          </div>
+          <div class="progress-item">
+            <div class="progress-header"><span>ML / AI</span><span class="neon-green">45%</span></div>
+            <div class="progress-bar"><div class="progress-fill" style="width:45%;background:linear-gradient(90deg,var(--neon-green),var(--neon-cyan))"></div></div>
+          </div>
+          <div class="progress-item">
+            <div class="progress-header"><span>System Design</span><span style="color:#ffaa00">30%</span></div>
+            <div class="progress-bar"><div class="progress-fill" style="width:30%;background:linear-gradient(90deg,#ffaa00,var(--neon-pink))"></div></div>
+          </div>
+          <div class="progress-item">
+            <div class="progress-header"><span>Interview Prep</span><span class="neon-pink">58%</span></div>
+            <div class="progress-bar"><div class="progress-fill" style="width:58%;background:linear-gradient(90deg,var(--neon-pink),var(--neon-purple))"></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== CODE GENERATOR ==================== -->
+<div id="page-code-gen" class="page">
+  <div class="tool-page">
+    <div class="container">
+      <div style="margin-bottom:8px"><a class="form-link" style="font-size:13px" onclick="showPage('dashboard')">← Dashboard</a></div>
+      <div class="tool-header">
+        <h1 class="tool-title">⌨ AI Code Generator</h1>
+        <p class="tool-sub">Describe what you want to build and get production-ready code instantly</p>
+      </div>
+      <div class="tool-grid">
+        <div class="tool-panel glass">
+          <div class="panel-title">⚙ Configuration</div>
+          <div class="form-group">
+            <label class="form-label">Programming Language</label>
+            <select class="select-input" id="code-lang">
+              <option value="python">Python</option><option value="javascript">JavaScript</option><option value="typescript">TypeScript</option><option value="java">Java</option><option value="cpp">C++</option><option value="go">Go</option><option value="rust">Rust</option><option value="sql">SQL</option><option value="bash">Bash/Shell</option><option value="html">HTML/CSS</option><option value="react">React (JSX)</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Describe what to build</label>
+            <textarea class="code-area" id="code-prompt" style="min-height:200px" placeholder="e.g. A REST API in Python with FastAPI that manages a todo list with CRUD operations, JWT authentication, and MongoDB connection..."></textarea>
+          </div>
+          <button class="btn btn-primary" style="width:100%;justify-content:center" onclick="generateCode()">⚡ Generate Code</button>
+        </div>
+        <div class="tool-panel glass">
+          <div class="panel-title">📦 Generated Code</div>
+          <div class="loading-spinner" id="code-spinner"><div class="spinner"></div><div class="loading-text">AI is writing your code...</div></div>
+          <div class="code-output" id="code-output" style="min-height:340px">
+            <span style="color:var(--text3)">// Your generated code will appear here...</span>
+          </div>
+          <div class="output-actions">
+            <button class="btn btn-ghost btn-sm" onclick="copyCode()">📋 Copy</button>
+            <button class="btn btn-ghost btn-sm" onclick="downloadCode()">⬇ Download</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== GITHUB ANALYZER ==================== -->
+<div id="page-github" class="page">
+  <div class="tool-page">
+    <div class="container">
+      <div style="margin-bottom:8px"><a class="form-link" style="font-size:13px" onclick="showPage('dashboard')">← Dashboard</a></div>
+      <div class="tool-header">
+        <h1 class="tool-title">⬡ GitHub Repository Analyzer</h1>
+        <p class="tool-sub">Paste any GitHub URL for deep AI-powered insights</p>
+      </div>
+      <div style="max-width:700px;margin:0 auto">
+        <div class="glass" style="padding:32px;margin-bottom:24px">
+          <div class="form-group">
+            <label class="form-label">GitHub Repository URL</label>
+            <input type="text" class="form-input" id="github-url" placeholder="https://github.com/owner/repository" value="https://github.com/facebook/react">
+          </div>
+          <button class="btn btn-primary" style="width:100%;justify-content:center" onclick="analyzeRepo()">🔍 Analyze Repository</button>
+        </div>
+        <div class="loading-spinner" id="github-spinner"><div class="spinner"></div><div class="loading-text">Fetching repository data...</div></div>
+        <div id="github-result" style="display:none">
+          <div class="glass" style="padding:32px;margin-bottom:16px">
+            <div style="display:flex;align-items:flex-start;gap:24px;flex-wrap:wrap">
+              <div style="flex:1;min-width:200px">
+                <div style="font-size:22px;font-weight:800;margin-bottom:4px" id="repo-name">—</div>
+                <div style="font-size:14px;color:var(--text2);margin-bottom:16px" id="repo-desc">—</div>
+                <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px">
+                  <div class="repo-stat"><span>⭐</span><div><strong id="repo-stars">—</strong><div>Stars</div></div></div>
+                  <div class="repo-stat"><span>🔀</span><div><strong id="repo-forks">—</strong><div>Forks</div></div></div>
+                  <div class="repo-stat"><span>👁</span><div><strong id="repo-watchers">—</strong><div>Watchers</div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="glass" style="padding:24px;margin-bottom:16px">
+            <div class="card-title">Languages Used</div>
+            <div class="lang-bar" id="lang-bar"></div>
+            <div class="lang-legend" id="lang-legend"></div>
+          </div>
+          <div class="glass" style="padding:24px;margin-bottom:16px">
+            <div class="card-title">🤖 AI Summary</div>
+            <div id="repo-ai-summary" style="font-size:15px;line-height:1.7;color:var(--text2)">—</div>
+          </div>
+          <div class="glass" style="padding:24px">
+            <div class="card-title">📅 Recent Commits</div>
+            <div id="repo-commits"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== BUG FINDER ==================== -->
+<div id="page-bug-finder" class="page">
+  <div class="tool-page">
+    <div class="container">
+      <div style="margin-bottom:8px"><a class="form-link" style="font-size:13px" onclick="showPage('dashboard')">← Dashboard</a></div>
+      <div class="tool-header">
+        <h1 class="tool-title">🐛 AI Bug Finder</h1>
+        <p class="tool-sub">Paste your code and AI will detect bugs, explain causes, and provide fixes</p>
+      </div>
+      <div class="tool-grid">
+        <div class="tool-panel glass">
+          <div class="panel-title">📥 Paste Your Code</div>
+          <div class="form-group">
+            <select class="select-input" id="bug-lang" style="margin-bottom:12px">
+              <option value="python">Python</option><option value="javascript">JavaScript</option><option value="java">Java</option><option value="cpp">C++</option><option value="c">C</option>
+            </select>
+          </div>
+          <textarea class="code-area" id="bug-code" style="min-height:360px" placeholder="Paste your buggy code here...
+        
+def calculate_average(numbers):
+    total = 0
+    for n in numbers
+        total += n
+    return total / len(numbers)"></textarea>
+          <button class="btn btn-primary" style="width:100%;justify-content:center;margin-top:16px" onclick="findBugs()">🔍 Find & Fix Bugs</button>
+        </div>
+        <div class="tool-panel glass">
+          <div class="panel-title">🛠 Analysis Results</div>
+          <div class="loading-spinner" id="bug-spinner"><div class="spinner"></div><div class="loading-text">Scanning for bugs...</div></div>
+          <div id="bug-result">
+            <div style="text-align:center;padding:60px 20px;color:var(--text3)">Paste code on the left and click "Find & Fix Bugs"</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== RESUME ANALYZER ==================== -->
+<div id="page-resume" class="page">
+  <div class="tool-page">
+    <div class="container">
+      <div style="margin-bottom:8px"><a class="form-link" style="font-size:13px" onclick="showPage('dashboard')">← Dashboard</a></div>
+      <div class="tool-header">
+        <h1 class="tool-title">📄 AI Resume Analyzer</h1>
+        <p class="tool-sub">Get your ATS score, skill gap analysis, and actionable improvement tips</p>
+      </div>
+      <div class="tool-grid">
+        <div class="tool-panel glass">
+          <div class="panel-title">📤 Upload Resume</div>
+          <div class="upload-zone" id="resume-upload-zone" onclick="document.getElementById('resume-file').click()" ondragover="event.preventDefault();this.classList.add('dragging')" ondragleave="this.classList.remove('dragging')" ondrop="handleResumeDrop(event)">
+            <div class="upload-icon">📄</div>
+            <div class="upload-text"><strong>Click to upload</strong> or drag & drop</div>
+            <div style="font-size:12px;color:var(--text3);margin-top:6px">PDF or TXT format • Max 5MB</div>
+          </div>
+          <input type="file" id="resume-file" accept=".pdf,.txt" style="display:none" onchange="handleResumeFile(this)">
+          <div id="resume-filename" style="margin-top:12px;font-size:13px;color:var(--neon-cyan);display:none"></div>
+          
+          <div style="margin-top:24px">
+            <div class="form-label">Or paste resume text directly:</div>
+            <textarea class="code-area" id="resume-text" style="min-height:200px;font-family:'Inter',sans-serif" placeholder="Paste your resume text here...&#10;&#10;Name: Chirusai Nandareddy&#10;Skills: Python, SQL, Power BI, TensorFlow..."></textarea>
+          </div>
+          <div class="form-group" style="margin-top:16px">
+            <label class="form-label">Target Job Role (optional)</label>
+            <input type="text" class="form-input" id="resume-role" placeholder="e.g. Data Analyst, Software Engineer">
+          </div>
+          <button class="btn btn-primary" style="width:100%;justify-content:center;margin-top:16px" onclick="analyzeResume()">🚀 Analyze Resume</button>
+        </div>
+        <div class="tool-panel glass">
+          <div class="panel-title">📊 Analysis Results</div>
+          <div class="loading-spinner" id="resume-spinner"><div class="spinner"></div><div class="loading-text">Analyzing your resume...</div></div>
+          <div id="resume-result">
+            <div style="text-align:center;padding:60px 20px;color:var(--text3)">Upload your resume to see AI analysis</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== CAREER ADVISOR ==================== -->
+<div id="page-career" class="page">
+  <div class="tool-page">
+    <div class="container">
+      <div style="margin-bottom:8px"><a class="form-link" style="font-size:13px" onclick="showPage('dashboard')">← Dashboard</a></div>
+      <div class="tool-header">
+        <h1 class="tool-title">🎯 AI Career Advisor</h1>
+        <p class="tool-sub">Get a personalized career roadmap with courses, salary ranges, and interview prep</p>
+      </div>
+      <div class="tool-grid">
+        <div class="tool-panel glass">
+          <div class="panel-title">📝 Your Profile</div>
+          <div class="form-group">
+            <label class="form-label">Your Current Skills</label>
+            <input type="text" class="form-input" id="career-skills" placeholder="Python, SQL, Machine Learning, Power BI...">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Interests</label>
+            <input type="text" class="form-input" id="career-interests" placeholder="Data Science, AI, Web Dev, Cloud...">
+          </div>
+          <div class="form-group">
+            <label class="form-label">CGPA / GPA</label>
+            <input type="text" class="form-input" id="career-cgpa" placeholder="e.g. 8.2 / 10">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Preferred Role</label>
+            <select class="select-input" id="career-role">
+              <option>Data Analyst</option><option>Data Scientist</option><option>ML Engineer</option><option>Software Developer</option><option>Full Stack Developer</option><option>DevOps Engineer</option><option>Cloud Architect</option><option>Cybersecurity Analyst</option><option>Product Manager</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Years of Experience</label>
+            <select class="select-input" id="career-exp">
+              <option value="0">Fresher / Student</option><option value="1">1-2 years</option><option value="3">3-5 years</option><option value="5">5+ years</option>
+            </select>
+          </div>
+          <button class="btn btn-primary" style="width:100%;justify-content:center" onclick="getCareerAdvice()">🎯 Generate Career Roadmap</button>
+        </div>
+        <div class="tool-panel glass">
+          <div class="panel-title">🗺 Your Career Roadmap</div>
+          <div class="loading-spinner" id="career-spinner"><div class="spinner"></div><div class="loading-text">Building your personalized roadmap...</div></div>
+          <div id="career-result"><div style="text-align:center;padding:60px 20px;color:var(--text3)">Fill in your profile to get personalized advice</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== MOCK INTERVIEW ==================== -->
+<div id="page-interview" class="page">
+  <div class="tool-page">
+    <div class="container">
+      <div style="margin-bottom:8px"><a class="form-link" style="font-size:13px" onclick="showPage('dashboard')">← Dashboard</a></div>
+      <div class="tool-header">
+        <h1 class="tool-title">🎤 AI Mock Interview</h1>
+        <p class="tool-sub">Practice real interviews with AI — get instant feedback and scores</p>
+      </div>
+      <div style="max-width:800px;margin:0 auto">
+        <div class="glass" id="interview-setup-panel" style="padding:40px">
+          <h3 style="font-size:20px;font-weight:700;margin-bottom:8px">Choose your role</h3>
+          <p style="color:var(--text2);font-size:14px;margin-bottom:24px">Select the position you're interviewing for</p>
+          <div class="role-grid">
+            <div class="role-card" onclick="selectRole(this,'Frontend Developer')"><div class="role-icon">🖥</div><div class="role-name">Frontend Dev</div></div>
+            <div class="role-card" onclick="selectRole(this,'Backend Developer')"><div class="role-icon">⚙</div><div class="role-name">Backend Dev</div></div>
+            <div class="role-card" onclick="selectRole(this,'Data Analyst')"><div class="role-icon">📊</div><div class="role-name">Data Analyst</div></div>
+            <div class="role-card" onclick="selectRole(this,'Data Scientist')"><div class="role-icon">🤖</div><div class="role-name">Data Scientist</div></div>
+            <div class="role-card" onclick="selectRole(this,'DevOps Engineer')"><div class="role-icon">☁</div><div class="role-name">DevOps</div></div>
+            <div class="role-card" onclick="selectRole(this,'Full Stack Developer')"><div class="role-icon">⚡</div><div class="role-name">Full Stack</div></div>
+          </div>
+          <div class="form-group" style="margin-top:20px">
+            <label class="form-label">Difficulty</label>
+            <select class="select-input" id="interview-difficulty">
+              <option value="entry">Entry Level (0-2 years)</option>
+              <option value="mid">Mid Level (2-5 years)</option>
+              <option value="senior">Senior Level (5+ years)</option>
+            </select>
+          </div>
+          <button class="btn btn-primary" style="width:100%;justify-content:center;margin-top:24px" onclick="startInterview()">🎤 Start Interview</button>
+        </div>
+
+        <div class="glass" id="interview-active-panel" style="display:none;padding:40px">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:24px">
+            <div style="font-size:14px;color:var(--text2)">Question <span id="q-num">1</span> of 5</div>
+            <div class="timer" id="timer">02:00</div>
+            <div style="font-size:13px;color:var(--text2)" id="interview-role-label">—</div>
+          </div>
+          <div class="interview-q" id="interview-question">Loading question...</div>
+          <div style="margin-bottom:16px">
+            <label class="form-label">Your Answer</label>
+            <textarea class="answer-area" id="interview-answer" placeholder="Type your answer here or use voice input..."></textarea>
+          </div>
+          <div style="display:flex;gap:16px;align-items:center;flex-wrap:wrap">
+            <button class="voice-btn" id="voice-btn" onclick="toggleVoice()" title="Voice Input">🎙</button>
+            <div style="flex:1">
+              <div style="font-size:13px;color:var(--text2)" id="voice-status">Click mic to use voice input</div>
+            </div>
+            <button class="btn btn-primary" onclick="nextQuestion()">Next Question →</button>
+          </div>
+        </div>
+
+        <div class="glass" id="interview-result-panel" style="display:none;padding:40px">
+          <h3 style="font-size:24px;font-weight:800;margin-bottom:8px;text-align:center">Interview Complete! 🎉</h3>
+          <p style="text-align:center;color:var(--text2);margin-bottom:32px">Here's your performance scorecard</p>
+          <div class="score-card">
+            <div class="score-item"><div class="score-val neon-cyan" id="score-communication">82</div><div class="score-cat">Communication</div></div>
+            <div class="score-item"><div class="score-val neon-purple" id="score-technical">76</div><div class="score-cat">Technical Depth</div></div>
+            <div class="score-item"><div class="score-val neon-green" id="score-overall">79</div><div class="score-cat">Overall Score</div></div>
+          </div>
+          <div id="interview-feedback" style="padding:24px;background:var(--surface);border-radius:var(--radius);margin-top:20px;font-size:14px;line-height:1.7;color:var(--text2)"></div>
+          <div style="display:flex;gap:12px;justify-content:center;margin-top:24px;flex-wrap:wrap">
+            <button class="btn btn-primary" onclick="resetInterview()">Try Again</button>
+            <button class="btn btn-outline" onclick="showPage('dashboard')">Back to Dashboard</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== LEARNING ROADMAP ==================== -->
+<div id="page-roadmap" class="page">
+  <div class="tool-page">
+    <div class="container">
+      <div style="margin-bottom:8px"><a class="form-link" style="font-size:13px" onclick="showPage('dashboard')">← Dashboard</a></div>
+      <div class="tool-header">
+        <h1 class="tool-title">🗺 AI Learning Roadmap</h1>
+        <p class="tool-sub">Visual, step-by-step paths to master your chosen domain</p>
+      </div>
+      <div class="roadmap-btn-group">
+        <button class="road-btn active" onclick="selectRoadmap(this,'webdev')">🌐 Web Development</button>
+        <button class="road-btn" onclick="selectRoadmap(this,'datascience')">📊 Data Science</button>
+        <button class="road-btn" onclick="selectRoadmap(this,'aiml')">🤖 AI / ML</button>
+        <button class="road-btn" onclick="selectRoadmap(this,'cyber')">🔐 Cyber Security</button>
+        <button class="road-btn" onclick="selectRoadmap(this,'cloud')">☁ Cloud Computing</button>
+        <button class="road-btn" onclick="selectRoadmap(this,'devops')">⚙ DevOps</button>
+      </div>
+      <div id="roadmap-content" class="roadmap-timeline"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== PROJECT GENERATOR ==================== -->
+<div id="page-project-gen" class="page">
+  <div class="tool-page">
+    <div class="container">
+      <div style="margin-bottom:8px"><a class="form-link" style="font-size:13px" onclick="showPage('dashboard')">← Dashboard</a></div>
+      <div class="tool-header">
+        <h1 class="tool-title">💡 AI Project Generator</h1>
+        <p class="tool-sub">Generate unique project ideas with full architecture and starter code</p>
+      </div>
+      <div class="tool-grid">
+        <div class="tool-panel glass">
+          <div class="panel-title">⚙ Project Settings</div>
+          <div class="form-group">
+            <label class="form-label">Domain</label>
+            <select class="select-input" id="proj-domain">
+              <option>Web Development</option><option>Data Science</option><option>AI / Machine Learning</option><option>Mobile App</option><option>DevOps / Cloud</option><option>Blockchain</option><option>IoT</option><option>Cybersecurity</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Difficulty Level</label>
+            <select class="select-input" id="proj-level">
+              <option>Beginner</option><option>Intermediate</option><option>Advanced</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Your Tech Stack</label>
+            <input type="text" class="form-input" id="proj-stack" placeholder="Python, React, MongoDB, AWS...">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Purpose</label>
+            <select class="select-input" id="proj-purpose">
+              <option>Portfolio Project</option><option>Learning</option><option>Startup Idea</option><option>Hackathon</option><option>Open Source</option>
+            </select>
+          </div>
+          <button class="btn btn-primary" style="width:100%;justify-content:center" onclick="generateProjects()">💡 Generate Project Ideas</button>
+        </div>
+        <div class="tool-panel glass">
+          <div class="panel-title">🚀 Project Ideas</div>
+          <div class="loading-spinner" id="proj-spinner"><div class="spinner"></div><div class="loading-text">Generating creative ideas...</div></div>
+          <div id="proj-result"><div style="text-align:center;padding:60px 20px;color:var(--text3)">Configure settings and generate project ideas</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== TECH NEWS HUB ==================== -->
+<div id="page-tech-news" class="page">
+  <div class="tool-page">
+    <div class="container">
+      <div style="margin-bottom:8px"><a class="form-link" style="font-size:13px" onclick="showPage('dashboard')">← Dashboard</a></div>
+      <div class="tool-header">
+        <h1 class="tool-title">📡 AI Tech News Hub</h1>
+        <p class="tool-sub">AI-curated developer news, tools, and trends — updated in real-time</p>
+      </div>
+      <div style="display:flex;gap:12px;flex-wrap:wrap;margin-bottom:32px">
+        <button class="road-btn active" onclick="filterNews(this,'all')">All</button>
+        <button class="road-btn" onclick="filterNews(this,'ai')">AI & ML</button>
+        <button class="road-btn" onclick="filterNews(this,'web')">Web Dev</button>
+        <button class="road-btn" onclick="filterNews(this,'cloud')">Cloud</button>
+        <button class="road-btn" onclick="filterNews(this,'security')">Security</button>
+        <button class="road-btn" onclick="filterNews(this,'open-source')">Open Source</button>
+      </div>
+      <div class="news-grid" id="news-grid"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== COMMUNITY ==================== -->
+<div id="page-community" class="page">
+  <div class="tool-page">
+    <div class="container">
+      <div style="margin-bottom:8px"><a class="form-link" style="font-size:13px" onclick="showPage('dashboard')">← Dashboard</a></div>
+      <div class="tool-header">
+        <h1 class="tool-title">💬 Community Forum</h1>
+        <p class="tool-sub">Connect, share, and grow with 50,000+ developers</p>
+      </div>
+      <div class="community-grid">
+        <div>
+          <div class="new-post glass">
+            <div class="panel-title">✍ Share Something</div>
+            <textarea class="post-input" id="new-post-text" placeholder="Ask a question, share a project, or start a discussion..."></textarea>
+            <div class="post-toolbar">
+              <div class="post-tools">
+                <div class="post-tool" onclick="addCodeToPost()" title="Add Code">{'}'}</div>
+                <div class="post-tool" onclick="addImageToPost()" title="Add Image">🖼</div>
+                <div class="post-tool" title="Add Link">🔗</div>
+              </div>
+              <button class="btn btn-primary btn-sm" onclick="submitPost()">Post</button>
+            </div>
+            <input type="file" id="post-image-file" accept="image/*" style="display:none" onchange="handlePostImage(this)">
+            <img id="post-image-preview" class="post-image" style="margin-top:12px">
+          </div>
+          <div id="posts-list"></div>
+        </div>
+        <div>
+          <div class="glass" style="padding:24px;margin-bottom:16px">
+            <div class="card-title">🔥 Trending Topics</div>
+            <div style="display:flex;flex-wrap:wrap;gap:8px">
+              <span class="tag" style="cursor:pointer">#Python</span>
+              <span class="tag" style="cursor:pointer">#React</span>
+              <span class="tag" style="cursor:pointer">#MachineLearning</span>
+              <span class="tag" style="cursor:pointer">#SystemDesign</span>
+              <span class="tag" style="cursor:pointer">#OpenAI</span>
+              <span class="tag" style="cursor:pointer">#Docker</span>
+              <span class="tag" style="cursor:pointer">#Kubernetes</span>
+              <span class="tag" style="cursor:pointer">#DataScience</span>
+            </div>
+          </div>
+          <div class="glass" style="padding:24px">
+            <div class="card-title">👥 Active Members</div>
+            <div id="active-members"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== HACKATHONS ==================== -->
+<div id="page-hackathons" class="page">
+  <div class="tool-page">
+    <div class="container">
+      <div style="margin-bottom:8px"><a class="form-link" style="font-size:13px" onclick="showPage('landing')">← Home</a></div>
+      <div class="tool-header">
+        <h1 class="tool-title">🏆 Hackathons</h1>
+        <p class="tool-sub">Compete, collaborate, and win in the world's best developer competitions</p>
+      </div>
+      <div class="hack-grid" id="hackathon-list"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== LEADERBOARD ==================== -->
+<div id="page-leaderboard" class="page">
+  <div class="tool-page">
+    <div class="container">
+      <div style="margin-bottom:8px"><a class="form-link" style="font-size:13px" onclick="showPage('landing')">← Home</a></div>
+      <div class="tool-header">
+        <h1 class="tool-title">📊 Developer Leaderboard</h1>
+        <p class="tool-sub">Global rankings based on XP, projects, contributions, and challenges</p>
+      </div>
+      <div style="display:flex;gap:12px;flex-wrap:wrap;margin-bottom:28px">
+        <button class="road-btn active" onclick="filterLB(this,'global')">🌍 Global</button>
+        <button class="road-btn" onclick="filterLB(this,'india')">🇮🇳 India</button>
+        <button class="road-btn" onclick="filterLB(this,'monthly')">📅 Monthly</button>
+        <button class="road-btn" onclick="filterLB(this,'weekly')">📆 Weekly</button>
+      </div>
+      <div class="glass" style="padding:0;overflow:hidden">
+        <table class="lb-table" style="width:100%">
+          <thead>
+            <tr>
+              <th>Rank</th>
+              <th>Developer</th>
+              <th>XP Points</th>
+              <th>Projects</th>
+              <th>Badges</th>
+            </tr>
+          </thead>
+          <tbody id="lb-body"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ==================== STATE ====================
+let currentUser = JSON.parse(localStorage.getItem('dv_user') || 'null');
+let selectedInterviewRole = '';
+let interviewQuestions = [];
+let currentQuestion = 0;
+let timerInterval = null;
+let timerSeconds = 120;
+let isRecording = false;
+let recognition = null;
+let currentRoadmap = 'webdev';
+let postsData = [];
+let likedPosts = new Set();
+let followedUsers = new Set();
+
+// ==================== PARTICLES ====================
+(function(){
+  const c = document.getElementById('particles-canvas');
+  const ctx = c.getContext('2d');
+  let W,H,particles=[];
+  function resize(){W=c.width=window.innerWidth;H=c.height=window.innerHeight}
+  function Particle(){
+    this.x=Math.random()*W;this.y=Math.random()*H;
+    this.vx=(Math.random()-.5)*.3;this.vy=(Math.random()-.5)*.3;
+    this.r=Math.random()*2+.5;
+    this.colors=['rgba(0,245,255,','rgba(191,95,255,','rgba(57,255,20,'];
+    this.color=this.colors[Math.floor(Math.random()*3)];
+    this.alpha=Math.random()*.5+.1;
+  }
+  function init(){resize();particles=[];for(let i=0;i<80;i++)particles.push(new Particle())}
+  function draw(){
+    ctx.clearRect(0,0,W,H);
+    particles.forEach(p=>{
+      p.x+=p.vx;p.y+=p.vy;
+      if(p.x<0)p.x=W;if(p.x>W)p.x=0;
+      if(p.y<0)p.y=H;if(p.y>H)p.y=0;
+      ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
+      ctx.fillStyle=p.color+p.alpha+')';ctx.fill();
+    });
+    // connections
+    particles.forEach((a,i)=>{
+      particles.slice(i+1).forEach(b=>{
+        const d=Math.hypot(a.x-b.x,a.y-b.y);
+        if(d<120){
+          ctx.beginPath();ctx.moveTo(a.x,a.y);ctx.lineTo(b.x,b.y);
+          ctx.strokeStyle='rgba(0,245,255,'+(0.05*(1-d/120))+')';
+          ctx.lineWidth=.5;ctx.stroke();
+        }
+      });
+    });
+    requestAnimationFrame(draw);
+  }
+  window.addEventListener('resize',()=>{resize();particles=[];for(let i=0;i<80;i++)particles.push(new Particle())});
+  init();draw();
+})();
+
+// ==================== COUNTERS ====================
+function animateCounters(){
+  document.querySelectorAll('.counter').forEach(el=>{
+    const target=parseInt(el.dataset.target);
+    let current=0;
+    const inc=target/60;
+    const timer=setInterval(()=>{
+      current+=inc;
+      if(current>=target){current=target;clearInterval(timer)}
+      el.textContent=Math.floor(current).toLocaleString();
+    },16);
+  });
+}
+setTimeout(animateCounters,800);
+
+// ==================== NAVBAR SCROLL ====================
+window.addEventListener('scroll',()=>{
+  document.getElementById('navbar').classList.toggle('scrolled',window.scrollY>50);
+});
+
+// ==================== PAGE NAVIGATION ====================
+function showPage(page){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  const el=document.getElementById('page-'+page);
+  if(el){el.classList.add('active');window.scrollTo(0,0)}
+  
+  // update navbar
+  const isAuth=['dashboard','code-gen','github','bug-finder','resume','career','interview','roadmap','project-gen','tech-news','community'].includes(page);
+  const navLinks=document.getElementById('navLinks');
+  const navActions=document.getElementById('navActions');
+  if(isAuth&&currentUser){
+    navActions.innerHTML=`<button class="btn btn-ghost btn-sm" onclick="toggleSidebar()">☰ Menu</button><button class="btn btn-danger btn-sm" onclick="logout()">Logout</button>`;
+    navLinks.style.display='none';
+  } else {
+    navActions.innerHTML=`<button class="btn btn-ghost btn-sm" onclick="showPage('login')">Login</button><button class="btn btn-primary btn-sm" onclick="showPage('signup')">Sign Up</button>`;
+    navLinks.style.display='flex';
+  }
+
+  // page-specific init
+  if(page==='roadmap') renderRoadmap(currentRoadmap);
+  if(page==='tech-news') renderNews('all');
+  if(page==='community') initCommunity();
+  if(page==='hackathons') renderHackathons();
+  if(page==='leaderboard') renderLeaderboard('global');
+}
+
+function scrollToSection(id){
+  setTimeout(()=>{const el=document.getElementById(id);if(el)el.scrollIntoView({behavior:'smooth'})},100);
+}
+
+function requireAuth(page){
+  if(currentUser){showPage(page)}
+  else{toast('Please sign in to use this feature','info');showPage('login')}
+}
+
+// ==================== TOAST ====================
+function toast(msg,type='info',duration=3000){
+  const c=document.getElementById('toastContainer');
+  const t=document.createElement('div');
+  t.className=`toast ${type}`;
+  const icons={success:'✅',error:'❌',info:'ℹ'};
+  t.innerHTML=`<span>${icons[type]||'ℹ'}</span><span>${msg}</span>`;
+  c.appendChild(t);
+  setTimeout(()=>{t.style.animation='slide-in .3s ease reverse';setTimeout(()=>t.remove(),300)},duration);
+}
+
+// ==================== AUTH ====================
+function togglePw(id,btn){
+  const inp=document.getElementById(id);
+  if(inp.type==='password'){inp.type='text';btn.textContent='🙈'}
+  else{inp.type='password';btn.textContent='👁'}
+}
+
+function validateEmail(e){return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e)}
+
+function doLogin(){
+  const email=document.getElementById('login-email').value.trim();
+  const pw=document.getElementById('login-password').value;
+  let valid=true;
+  document.getElementById('login-email-error').style.display='none';
+  document.getElementById('login-pw-error').style.display='none';
+  document.getElementById('login-email').classList.remove('error');
+  document.getElementById('login-password').classList.remove('error');
+  if(!validateEmail(email)){
+    document.getElementById('login-email-error').style.display='block';
+    document.getElementById('login-email').classList.add('error');
+    valid=false;
+  }
+  if(pw.length<6){
+    document.getElementById('login-pw-error').style.display='block';
+    document.getElementById('login-password').classList.add('error');
+    valid=false;
+  }
+  if(!valid)return;
+  document.getElementById('login-spinner').style.display='block';
+  setTimeout(()=>{
+    // Simulate auth — check localStorage users
+    const users=JSON.parse(localStorage.getItem('dv_users')||'[]');
+    const user=users.find(u=>u.email===email&&u.pw===pw);
+    if(user||email==='demo@devverse.ai'){
+      const u=user||{name:'Demo User',email,fname:'Demo',lname:'User'};
+      currentUser=u;
+      localStorage.setItem('dv_user',JSON.stringify(u));
+      document.getElementById('login-spinner').style.display='none';
+      setDashUser(u);
+      showPage('dashboard');
+      toast('Welcome back, '+u.fname+'!','success');
+    } else {
+      document.getElementById('login-spinner').style.display='none';
+      document.getElementById('login-pw-error').textContent='Incorrect email or password. Try demo@devverse.ai';
+      document.getElementById('login-pw-error').style.display='block';
+    }
+  },1200);
+}
+
+function doSignup(){
+  const fname=document.getElementById('signup-fname').value.trim();
+  const lname=document.getElementById('signup-lname').value.trim();
+  const email=document.getElementById('signup-email').value.trim();
+  const pw=document.getElementById('signup-password').value;
+  const confirm=document.getElementById('signup-confirm').value;
+  const terms=document.getElementById('agree-terms').checked;
+  let valid=true;
+  ['fname-error','signup-email-error','signup-pw-error','confirm-error','terms-error'].forEach(id=>{
+    document.getElementById(id).style.display='none';
+  });
+  if(!fname){document.getElementById('fname-error').style.display='block';valid=false}
+  if(!validateEmail(email)){document.getElementById('signup-email-error').style.display='block';valid=false}
+  if(pw.length<8){document.getElementById('signup-pw-error').style.display='block';valid=false}
+  if(pw!==confirm){document.getElementById('confirm-error').style.display='block';valid=false}
+  if(!terms){document.getElementById('terms-error').style.display='block';valid=false}
+  if(!valid)return;
+  document.getElementById('signup-spinner').style.display='block';
+  setTimeout(()=>{
+    const users=JSON.parse(localStorage.getItem('dv_users')||'[]');
+    const exists=users.find(u=>u.email===email);
+    if(exists){
+      document.getElementById('signup-email-error').textContent='Email already registered.';
+      document.getElementById('signup-email-error').style.display='block';
+      document.getElementById('signup-spinner').style.display='none';
+      return;
+    }
+    const newUser={fname,lname,name:`${fname} ${lname}`,email,pw,avatar:fname[0].toUpperCase()+(lname[0]||'').toUpperCase()};
+    users.push(newUser);
+    localStorage.setItem('dv_users',JSON.stringify(users));
+    currentUser=newUser;
+    localStorage.setItem('dv_user',JSON.stringify(newUser));
+    document.getElementById('signup-spinner').style.display='none';
+    setDashUser(newUser);
+    showPage('dashboard');
+    toast('Account created! Welcome to DevVerse AI 🚀','success');
+  },1200);
+}
+
+function doReset(){
+  const email=document.getElementById('reset-email').value.trim();
+  document.getElementById('reset-email-error').style.display='none';
+  if(!validateEmail(email)){document.getElementById('reset-email-error').style.display='block';return}
+  document.getElementById('reset-success').style.display='block';
+  toast('Password reset link sent to '+email,'success');
+}
+
+function socialLogin(provider){
+  const user={fname:'Dev',lname:'User',name:'Dev User',email:'dev@devverse.ai',pw:'',avatar:'DU'};
+  currentUser=user;
+  localStorage.setItem('dv_user',JSON.stringify(user));
+  setDashUser(user);
+  showPage('dashboard');
+  toast(`Signed in with ${provider}!`,'success');
+}
+
+function setDashUser(u){
+  const name=u.fname||u.name||'Developer';
+  const lname=u.lname||'';
+  document.getElementById('dash-username').textContent=name;
+  document.getElementById('dash-name').textContent=`${name} ${lname}`;
+  document.getElementById('dash-avatar').textContent=(name[0]+(lname[0]||'')).toUpperCase();
+}
+
+function logout(){
+  currentUser=null;
+  localStorage.removeItem('dv_user');
+  showPage('landing');
+  toast('Logged out successfully','info');
+  closeSidebar();
+}
+
+// ==================== SIDEBAR ====================
+function toggleSidebar(){
+  document.getElementById('sidebar').classList.toggle('open');
+  document.getElementById('sidebarOverlay').classList.toggle('open');
+}
+function closeSidebar(){
+  document.getElementById('sidebar').classList.remove('open');
+  document.getElementById('sidebarOverlay').classList.remove('open');
+}
+
+// ==================== DARK MODE ====================
+function toggleDarkMode(){document.getElementById('dmToggle').classList.toggle('on')}
+
+// ==================== NOTIFICATIONS ====================
+function showNotifications(){
+  const content=`
+    <h3 style="font-size:18px;font-weight:700;margin-bottom:20px">🔔 Notifications</h3>
+    <div class="activity-item"><div class="a-dot" style="background:var(--neon-cyan)"></div><div><div class="a-text">Your resume scored 84/100 on ATS analysis</div><div class="a-time">2 hours ago</div></div></div>
+    <div class="activity-item"><div class="a-dot" style="background:var(--neon-purple)"></div><div><div class="a-text">New hackathon: AI Innovation Challenge 2025</div><div class="a-time">5 hours ago</div></div></div>
+    <div class="activity-item"><div class="a-dot" style="background:var(--neon-pink)"></div><div><div class="a-text">Someone liked your community post</div><div class="a-time">Yesterday</div></div></div>
+    <div class="activity-item"><div class="a-dot" style="background:var(--neon-green)"></div><div><div class="a-text">🎉 You earned the "Code Wizard" badge!</div><div class="a-time">2 days ago</div></div></div>
+  `;
+  showModal(content);
+}
+
+// ==================== MODAL ====================
+function showModal(html){document.getElementById('modal-content').innerHTML=html;document.getElementById('modal').classList.add('open')}
+function closeModal(){document.getElementById('modal').classList.remove('open')}
+document.getElementById('modal').addEventListener('click',function(e){if(e.target===this)closeModal()});
+
+// ==================== AI CALL (Anthropic API) ====================
+async function callAI(systemPrompt, userPrompt, onChunk) {
+  try {
+    const response = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-6',
+        max_tokens: 1000,
+        stream: false,
+        system: systemPrompt,
+        messages: [{role: 'user', content: userPrompt}]
+      })
+    });
+    const data = await response.json();
+    if (data.content && data.content[0]) return data.content[0].text;
+    if (data.error) throw new Error(data.error.message);
+    return 'Unable to generate response. Please try again.';
+  } catch(e) {
+    console.error('AI Error:', e);
+    return null;
+  }
+}
+
+// ==================== CODE GENERATOR ====================
+async function generateCode(){
+  const lang=document.getElementById('code-lang').value;
+  const prompt=document.getElementById('code-prompt').value.trim();
+  if(!prompt){toast('Please describe what you want to build','error');return}
+  const spinner=document.getElementById('code-spinner');
+  const output=document.getElementById('code-output');
+  spinner.style.display='block';
+  output.innerHTML='<span style="color:var(--text3)">Generating...</span>';
+
+  const system=`You are an expert ${lang} developer. Generate clean, production-ready, well-commented code. Return ONLY the code with brief inline comments. No markdown fences.`;
+  const result = await callAI(system, `Write ${lang} code for: ${prompt}`);
+  
+  spinner.style.display='none';
+  if(result){
+    output.textContent=result;
+    addActivity(`Generated ${lang} code with AI`);
+    toast('Code generated successfully!','success');
+  } else {
+    output.innerHTML='<span style="color:var(--neon-pink)">Failed to generate. Please try again.</span>';
+    toast('Generation failed. Please retry.','error');
+  }
+}
+
+function copyCode(){
+  const text=document.getElementById('code-output').textContent;
+  if(!text||text.includes('will appear here')){toast('Nothing to copy','error');return}
+  navigator.clipboard.writeText(text).then(()=>toast('Code copied!','success'));
+}
+
+function downloadCode(){
+  const text=document.getElementById('code-output').textContent;
+  if(!text||text.includes('will appear here')){toast('Generate code first','error');return}
+  const ext={python:'py',javascript:'js',typescript:'ts',java:'java',cpp:'cpp',go:'go',rust:'rs',sql:'sql',bash:'sh',html:'html',react:'jsx'};
+  const lang=document.getElementById('code-lang').value;
+  const blob=new Blob([text],{type:'text/plain'});
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);
+  a.download=`generated.${ext[lang]||'txt'}`;a.click();
+  toast('Downloaded!','success');
+}
+
+// ==================== GITHUB ANALYZER ====================
+async function analyzeRepo(){
+  const url=document.getElementById('github-url').value.trim();
+  const match=url.match(/github\.com\/([^\/]+)\/([^\/]+)/);
+  if(!match){toast('Enter a valid GitHub repository URL','error');return}
+  const [,owner,repo]=match;
+  const spinner=document.getElementById('github-spinner');
+  const result=document.getElementById('github-result');
+  spinner.style.display='block';result.style.display='none';
+
+  try{
+    const [repoData,langData,commitsData]=await Promise.all([
+      fetch(`https://api.github.com/repos/${owner}/${repo}`).then(r=>r.json()),
+      fetch(`https://api.github.com/repos/${owner}/${repo}/languages`).then(r=>r.json()),
+      fetch(`https://api.github.com/repos/${owner}/${repo}/commits?per_page=5`).then(r=>r.json())
+    ]);
+    
+    if(repoData.message){toast('Repository not found or private','error');spinner.style.display='none';return}
+    
+    document.getElementById('repo-name').textContent=repoData.full_name;
+    document.getElementById('repo-desc').textContent=repoData.description||'No description provided';
+    document.getElementById('repo-stars').textContent=repoData.stargazers_count?.toLocaleString()||'0';
+    document.getElementById('repo-forks').textContent=repoData.forks_count?.toLocaleString()||'0';
+    document.getElementById('repo-watchers').textContent=repoData.watchers_count?.toLocaleString()||'0';
+    
+    // Languages
+    const colors=['#00f5ff','#bf5fff','#39ff14','#ff006e','#ffaa00','#4fc3f7','#f06292'];
+    const total=Object.values(langData).reduce((a,b)=>a+b,0);
+    const langBar=document.getElementById('lang-bar');
+    const langLegend=document.getElementById('lang-legend');
+    langBar.innerHTML='';langLegend.innerHTML='';
+    Object.entries(langData).sort((a,b)=>b[1]-a[1]).slice(0,7).forEach(([lang,bytes],i)=>{
+      const pct=(bytes/total*100).toFixed(1);
+      const col=colors[i%colors.length];
+      const seg=document.createElement('div');
+      seg.className='lang-segment';seg.style.cssText=`width:${pct}%;background:${col}`;
+      langBar.appendChild(seg);
+      const item=document.createElement('div');
+      item.className='lang-item';
+      item.innerHTML=`<div class="lang-dot" style="background:${col}"></div>${lang} ${pct}%`;
+      langLegend.appendChild(item);
+    });
+    
+    // Commits
+    const commitsEl=document.getElementById('repo-commits');
+    if(Array.isArray(commitsData)){
+      commitsEl.innerHTML=commitsData.map(c=>`
+        <div style="padding:12px 0;border-bottom:1px solid var(--border);display:flex;gap:12px;align-items:flex-start">
+          <div style="width:8px;height:8px;border-radius:50%;background:var(--neon-green);flex-shrink:0;margin-top:6px"></div>
+          <div><div style="font-size:14px;font-weight:500">${(c.commit?.message||'').split('\n')[0].slice(0,80)}</div>
+          <div style="font-size:12px;color:var(--text3);margin-top:2px">${c.commit?.author?.name||'Unknown'} · ${new Date(c.commit?.author?.date||'').toLocaleDateString()}</div></div>
+        </div>`).join('');
+    }
+    
+    // AI Summary
+    const aiSummary=await callAI(
+      'You are a code review AI. Give a concise, insightful 2-3 sentence summary of what this repository does and its quality.',
+      `Repository: ${repoData.full_name}\nDescription: ${repoData.description}\nLanguages: ${Object.keys(langData).join(', ')}\nStars: ${repoData.stargazers_count}\nForks: ${repoData.forks_count}`
+    );
+    document.getElementById('repo-ai-summary').textContent=aiSummary||'AI summary unavailable.';
+    
+    spinner.style.display='none';result.style.display='block';
+    addActivity(`Analyzed GitHub repo: ${repoData.full_name}`);
+    toast('Repository analyzed!','success');
+  }catch(e){
+    spinner.style.display='none';
+    toast('Failed to fetch repository data','error');
+  }
+}
+
+// ==================== BUG FINDER ====================
+async function findBugs(){
+  const code=document.getElementById('bug-code').value.trim();
+  const lang=document.getElementById('bug-lang').value;
+  if(!code){toast('Please paste your code first','error');return}
+  const spinner=document.getElementById('bug-spinner');
+  const result=document.getElementById('bug-result');
+  spinner.style.display='block';
+  result.innerHTML='';
+
+  const system=`You are an expert ${lang} debugger. Analyze code for bugs, explain each issue clearly, and provide corrected code. Format your response as:
+BUG FOUND: [description]
+ERROR TYPE: [type]
+LINE: [approximate line]
+FIX: [explanation]
+CORRECTED CODE:
+[fixed code]`;
+
+  const analysis=await callAI(system,`Analyze this ${lang} code for bugs:\n\n${code}`);
+  spinner.style.display='none';
+  if(analysis){
+    result.innerHTML=`
+      <div style="margin-bottom:16px;padding:16px;background:rgba(255,0,110,0.08);border:1px solid rgba(255,0,110,0.2);border-radius:var(--radius)">
+        <div style="font-size:12px;letter-spacing:2px;text-transform:uppercase;color:var(--neon-pink);margin-bottom:8px">🔍 Bug Analysis</div>
+        <pre style="white-space:pre-wrap;font-family:'JetBrains Mono',monospace;font-size:13px;line-height:1.7;color:var(--text)">${escHtml(analysis)}</pre>
+      </div>`;
+    addActivity(`Bug analysis completed for ${lang} code`);
+    toast('Analysis complete!','success');
+  } else {
+    result.innerHTML='<div style="color:var(--neon-pink);text-align:center;padding:40px">Analysis failed. Please try again.</div>';
+    toast('Analysis failed','error');
+  }
+}
+
+// ==================== RESUME ANALYZER ====================
+function handleResumeDrop(e){
+  e.preventDefault();document.getElementById('resume-upload-zone').classList.remove('dragging');
+  const f=e.dataTransfer.files[0];
+  if(f)processResumeFile(f);
+}
+function handleResumeFile(input){
+  const f=input.files[0];if(f)processResumeFile(f);
+}
+function processResumeFile(f){
+  document.getElementById('resume-filename').textContent='📎 '+f.name;
+  document.getElementById('resume-filename').style.display='block';
+  if(f.type==='text/plain'){
+    const r=new FileReader();
+    r.onload=e=>document.getElementById('resume-text').value=e.target.result;
+    r.readAsText(f);
+  }
+  toast('File uploaded: '+f.name,'success');
+}
+
+async function analyzeResume(){
+  const text=document.getElementById('resume-text').value.trim();
+  const role=document.getElementById('resume-role').value.trim();
+  if(!text){toast('Please paste your resume text or upload a file','error');return}
+  const spinner=document.getElementById('resume-spinner');
+  const result=document.getElementById('resume-result');
+  spinner.style.display='block';result.innerHTML='';
+
+  const system=`You are an expert ATS resume analyzer and career coach. Analyze the resume and return a JSON object with these exact keys:
+{
+  "ats_score": <number 0-100>,
+  "summary": "<2 sentence professional summary>",
+  "skills_found": ["skill1","skill2"],
+  "missing_skills": ["skill1","skill2"],
+  "strengths": ["strength1","strength2","strength3"],
+  "improvements": ["improvement1","improvement2","improvement3"],
+  "overall_feedback": "<paragraph of detailed feedback>"
+}
+Return ONLY the JSON, no other text.`;
+
+  const res=await callAI(system,`Analyze this resume${role?' for the role of '+role:''}:\n\n${text}`);
+  spinner.style.display='none';
+  
+  if(res){
+    try{
+      const data=JSON.parse(res.replace(/```json|```/g,'').trim());
+      const score=data.ats_score||75;
+      const color=score>=80?'var(--neon-green)':score>=60?'#ffaa00':'var(--neon-pink)';
+      result.innerHTML=`
+        <div class="result-section">
+          <div class="result-label">ATS Score</div>
+          <div style="display:flex;align-items:center;gap:20px">
+            <div class="score-ring">
+              <svg width="120" height="120" viewBox="0 0 120 120">
+                <circle cx="60" cy="60" r="50" fill="none" stroke="rgba(255,255,255,0.08)" stroke-width="8"/>
+                <circle cx="60" cy="60" r="50" fill="none" stroke="${color}" stroke-width="8"
+                  stroke-dasharray="${2*Math.PI*50}" stroke-dashoffset="${2*Math.PI*50*(1-score/100)}"
+                  stroke-linecap="round" style="transition:stroke-dashoffset 1s ease"/>
+              </svg>
+              <div class="score-num" style="color:${color}">${score}</div>
+            </div>
+            <div>
+              <div style="font-size:22px;font-weight:800;color:${color}">${score>=80?'Excellent!':score>=60?'Good':'Needs Work'}</div>
+              <div style="font-size:14px;color:var(--text2);margin-top:4px">${data.summary||''}</div>
+            </div>
+          </div>
+        </div>
+        <div class="result-section">
+          <div class="result-label">Skills Found</div>
+          <div class="tag-list">${(data.skills_found||[]).map(s=>`<span class="tag">${s}</span>`).join('')}</div>
+        </div>
+        <div class="result-section">
+          <div class="result-label">Missing Skills</div>
+          <div class="tag-list">${(data.missing_skills||[]).map(s=>`<span class="tag missing">${s}</span>`).join('')}</div>
+        </div>
+        <div class="result-section">
+          <div class="result-label">Strengths</div>
+          ${(data.strengths||[]).map(s=>`<div style="padding:8px 0;font-size:14px;display:flex;gap:8px"><span class="neon-green">✓</span>${s}</div>`).join('')}
+        </div>
+        <div class="result-section">
+          <div class="result-label">Improvements</div>
+          ${(data.improvements||[]).map(s=>`<div style="padding:8px 0;font-size:14px;display:flex;gap:8px"><span class="neon-pink">→</span>${s}</div>`).join('')}
+        </div>
+        <div class="result-section">
+          <div class="result-label">Overall Feedback</div>
+          <div class="result-value">${data.overall_feedback||''}</div>
+        </div>`;
+      addActivity(`Resume ATS Score: ${score}/100`);
+      toast('Resume analyzed! Score: '+score+'/100','success');
+    }catch(e){
+      result.innerHTML=`<div style="padding:16px;background:var(--surface);border-radius:var(--radius);font-size:14px;line-height:1.7;color:var(--text2)">${escHtml(res)}</div>`;
+    }
+  } else {
+    result.innerHTML='<div style="color:var(--neon-pink);text-align:center;padding:40px">Analysis failed. Please try again.</div>';
+    toast('Analysis failed','error');
+  }
+}
+
+// ==================== CAREER ADVISOR ====================
+async function getCareerAdvice(){
+  const skills=document.getElementById('career-skills').value.trim();
+  const interests=document.getElementById('career-interests').value.trim();
+  const cgpa=document.getElementById('career-cgpa').value.trim();
+  const role=document.getElementById('career-role').value;
+  const exp=document.getElementById('career-exp').value;
+  if(!skills){toast('Please enter your skills','error');return}
+  const spinner=document.getElementById('career-spinner');
+  const result=document.getElementById('career-result');
+  spinner.style.display='block';result.innerHTML='';
+
+  const system=`You are a senior career coach for tech professionals. Give detailed, actionable career advice. Format with clear sections using markdown-style headings.`;
+  const prompt=`Career profile:
+Role: ${role}
+Skills: ${skills}
+Interests: ${interests}
+CGPA: ${cgpa}
+Experience: ${exp} years
+
+Provide:
+1. Career Roadmap (3-5 steps)
+2. Top 5 skills to learn next (with resources)
+3. Salary range in India (₹ LPA)
+4. Top companies to target
+5. Key interview topics
+6. One actionable tip for this week`;
+
+  const res=await callAI(system, prompt);
+  spinner.style.display='none';
+  if(res){
+    const html=res
+      .replace(/^#{1,3} (.+)$/gm,'<div style="font-size:16px;font-weight:700;color:var(--neon-cyan);margin:20px 0 8px">$1</div>')
+      .replace(/^\d+\. (.+)$/gm,'<div style="padding:6px 0;font-size:14px;display:flex;gap:8px"><span class="neon-cyan">▸</span>$1</div>')
+      .replace(/^- (.+)$/gm,'<div style="padding:4px 0;font-size:14px;display:flex;gap:8px;color:var(--text2)"><span>•</span>$1</div>')
+      .replace(/\*\*(.+?)\*\*/g,'<strong style="color:var(--text)">$1</strong>')
+      .replace(/\n/g,'');
+    result.innerHTML=`<div style="line-height:1.7">${html}</div>`;
+    addActivity('Generated career roadmap for '+role);
+    toast('Career roadmap generated!','success');
+  } else {
+    result.innerHTML='<div style="color:var(--neon-pink);text-align:center;padding:40px">Failed to generate. Please retry.</div>';
+  }
+}
+
+// ==================== MOCK INTERVIEW ====================
+const interviewQBank={
+  'Frontend Developer':['Explain the difference between null and undefined in JavaScript.','What is the virtual DOM and how does React use it?','How does CSS specificity work? Give examples.','Describe the box model in CSS.','What are closures in JavaScript and why are they useful?'],
+  'Backend Developer':['Explain REST vs GraphQL. When would you choose one over the other?','What is database indexing and why does it matter?','Describe how you would design a rate limiter.','What are the SOLID principles in software design?','How do you handle authentication in a Node.js API?'],
+  'Data Analyst':['Walk me through how you approach a new dataset.','Explain the difference between INNER JOIN and LEFT JOIN with an example.','What is the difference between mean, median, and mode? When do you use each?','Describe a time you found a surprising insight in data.','How would you detect and handle outliers in a dataset?'],
+  'Data Scientist':['Explain overfitting and how you would prevent it.','What is the bias-variance tradeoff?','When would you use a Random Forest vs a Neural Network?','How does cross-validation work and why is it important?','Explain gradient descent in simple terms.'],
+  'DevOps Engineer':['What is the difference between Docker and a virtual machine?','Explain CI/CD and describe your ideal pipeline.','What is Kubernetes and why would you use it?','How would you monitor a microservices architecture?','Describe blue-green deployment.'],
+  'Full Stack Developer':['How would you scale a web application that serves millions of users?','Explain the event loop in Node.js.','What is CORS and how do you handle it?','Describe how you would implement authentication with JWT.','What is server-side rendering and when should you use it?']
+};
+
+function selectRole(el,role){
+  document.querySelectorAll('.role-card').forEach(c=>c.classList.remove('selected'));
+  el.classList.add('selected');
+  selectedInterviewRole=role;
+}
+
+function startInterview(){
+  if(!selectedInterviewRole){toast('Please select a role first','error');return}
+  const questions=interviewQBank[selectedInterviewRole]||interviewQBank['Backend Developer'];
+  interviewQuestions=[...questions].sort(()=>Math.random()-.5).slice(0,5);
+  currentQuestion=0;
+  document.getElementById('interview-setup-panel').style.display='none';
+  document.getElementById('interview-active-panel').style.display='block';
+  document.getElementById('interview-role-label').textContent=selectedInterviewRole;
+  showQuestion();
+}
+
+function showQuestion(){
+  document.getElementById('q-num').textContent=currentQuestion+1;
+  document.getElementById('interview-question').textContent=interviewQuestions[currentQuestion];
+  document.getElementById('interview-answer').value='';
+  resetTimer();
+}
+
+function resetTimer(){
+  clearInterval(timerInterval);
+  timerSeconds=120;
+  updateTimerDisplay();
+  timerInterval=setInterval(()=>{
+    timerSeconds--;
+    updateTimerDisplay();
+    if(timerSeconds<=0){clearInterval(timerInterval);toast("Time's up! Moving to next question",'info');nextQuestion()}
+  },1000);
+}
+
+function updateTimerDisplay(){
+  const m=Math.floor(timerSeconds/60).toString().padStart(2,'0');
+  const s=(timerSeconds%60).toString().padStart(2,'0');
+  const el=document.getElementById('timer');
+  el.textContent=`${m}:${s}`;
+  el.style.color=timerSeconds<30?'var(--neon-pink)':'var(--neon-cyan)';
+}
+
+async function nextQuestion(){
+  clearInterval(timerInterval);
+  if(currentQuestion>=4){
+    // End interview
+    document.getElementById('interview-active-panel').style.display='none';
+    document.getElementById('interview-result-panel').style.display='block';
+    const comm=Math.floor(Math.random()*25+70);
+    const tech=Math.floor(Math.random()*25+65);
+    const overall=Math.floor((comm+tech)/2);
+    document.getElementById('score-communication').textContent=comm;
+    document.getElementById('score-technical').textContent=tech;
+    document.getElementById('score-overall').textContent=overall;
+    
+    const feedback=await callAI(
+      'You are an interview coach. Give encouraging, specific feedback.',
+      `Candidate just completed a ${selectedInterviewRole} interview. Communication: ${comm}/100, Technical: ${tech}/100. Give 3-4 sentences of specific, actionable feedback.`
+    );
+    document.getElementById('interview-feedback').textContent=feedback||`Great effort on the ${selectedInterviewRole} interview! Focus on strengthening your technical explanations with concrete examples. Practice explaining complex concepts simply. Your communication score shows strong potential — keep building on that foundation.`;
+    addActivity(`Completed Mock Interview — ${selectedInterviewRole}`);
+    toast('Interview complete! Check your scorecard.','success');
+  } else {
+    currentQuestion++;
+    showQuestion();
+  }
+}
+
+function resetInterview(){
+  selectedInterviewRole='';
+  document.querySelectorAll('.role-card').forEach(c=>c.classList.remove('selected'));
+  document.getElementById('interview-result-panel').style.display='none';
+  document.getElementById('interview-setup-panel').style.display='block';
+}
+
+function toggleVoice(){
+  if(!('webkitSpeechRecognition' in window)&&!('SpeechRecognition' in window)){
+    toast('Voice input not supported in this browser','error');return;
+  }
+  if(isRecording){
+    isRecording=false;
+    recognition&&recognition.stop();
+    document.getElementById('voice-btn').classList.remove('recording');
+    document.getElementById('voice-status').textContent='Click mic to use voice input';
+    return;
+  }
+  const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+  recognition=new SR();
+  recognition.lang='en-US';recognition.continuous=true;recognition.interimResults=true;
+  recognition.onresult=e=>{
+    let transcript='';
+    for(let i=e.resultIndex;i<e.results.length;i++)transcript+=e.results[i][0].transcript;
+    document.getElementById('interview-answer').value=transcript;
+  };
+  recognition.onerror=()=>{isRecording=false;document.getElementById('voice-btn').classList.remove('recording')};
+  recognition.start();
+  isRecording=true;
+  document.getElementById('voice-btn').classList.add('recording');
+  document.getElementById('voice-btn').textContent='⏹';
+  document.getElementById('voice-status').textContent='🎙 Listening...';
+}
+
+// ==================== LEARNING ROADMAP ====================
+const roadmaps={
+  webdev:[
+    {phase:'Phase 1 · Weeks 1-4',title:'HTML, CSS & Basics',desc:'Master semantic HTML5, CSS Flexbox/Grid, responsive design, and browser DevTools.',resources:['MDN Web Docs','CSS Tricks','FreeCodeCamp']},
+    {phase:'Phase 2 · Weeks 5-10',title:'JavaScript & DOM',desc:'Variables, functions, arrays, objects, events, fetch API, async/await, ES6+ features.',resources:['JavaScript.info','Eloquent JavaScript','Wes Bos JS30']},
+    {phase:'Phase 3 · Weeks 11-18',title:'React & State Management',desc:'Components, hooks, React Router, Context API, Redux Toolkit, testing with Jest.',resources:['React Docs','Scrimba React','Egghead.io']},
+    {phase:'Phase 4 · Weeks 19-26',title:'Backend with Node.js',desc:'REST APIs with Express, MongoDB/PostgreSQL, JWT auth, Docker basics, deployment.',resources:['Node.js Docs','The Odin Project','FullStackOpen']},
+    {phase:'Phase 5 · Weeks 27-32',title:'Advanced & Portfolio',desc:'TypeScript, CI/CD, AWS/Vercel deployment. Build 3 full-stack projects for portfolio.',resources:['TypeScript Handbook','AWS Free Tier','GitHub Actions']}
+  ],
+  datascience:[
+    {phase:'Phase 1 · Weeks 1-4',title:'Python for Data',desc:'NumPy, Pandas, Matplotlib, Seaborn. Data cleaning, wrangling, and EDA.',resources:['Kaggle Learn','Pandas Docs','Corey Schafer Python']},
+    {phase:'Phase 2 · Weeks 5-10',title:'Statistics & Math',desc:'Probability, hypothesis testing, A/B testing, linear algebra, calculus fundamentals.',resources:['StatQuest','Khan Academy','Think Stats']},
+    {phase:'Phase 3 · Weeks 11-18',title:'Machine Learning',desc:'Scikit-learn, supervised/unsupervised learning, model evaluation, feature engineering.',resources:['Scikit-learn Docs','Hands-On ML Book','Fast.ai']},
+    {phase:'Phase 4 · Weeks 19-26',title:'SQL & Business Intelligence',desc:'Advanced SQL, Power BI / Tableau, data warehousing, ETL pipelines.',resources:['Mode SQL Tutorial','Tableau Public','dbt Docs']},
+    {phase:'Phase 5 · Weeks 27-32',title:'Projects & Competition',desc:'Kaggle competitions, end-to-end projects, GitHub portfolio, LinkedIn optimization.',resources:['Kaggle','DrivenData','Towards Data Science']}
+  ],
+  aiml:[
+    {phase:'Phase 1 · Weeks 1-4',title:'Python & Math Foundations',desc:'Linear algebra, calculus, probability theory. NumPy, SciPy, Matplotlib.',resources:['3Blue1Brown','Gilbert Strang MIT','Python Numpy Tutorial']},
+    {phase:'Phase 2 · Weeks 5-12',title:'Machine Learning Core',desc:'Regression, classification, clustering, ensemble methods, model selection and tuning.',resources:['Andrew Ng Coursera','Scikit-learn','ISLR Book']},
+    {phase:'Phase 3 · Weeks 13-22',title:'Deep Learning',desc:'Neural networks, CNNs, RNNs, Transformers, PyTorch / TensorFlow, transfer learning.',resources:['fast.ai','Deep Learning Specialization','PyTorch Tutorials']},
+    {phase:'Phase 4 · Weeks 23-30',title:'NLP & LLMs',desc:'Tokenization, embeddings, BERT, GPT, fine-tuning, LangChain, RAG pipelines.',resources:['Hugging Face Course','LangChain Docs','Karpathy Lectures']},
+    {phase:'Phase 5 · Weeks 31-36',title:'MLOps & Deployment',desc:'MLflow, Docker, FastAPI for ML, model monitoring, Kubernetes, cloud deployment.',resources:['MLflow Docs','Weights & Biases','Made With ML']}
+  ],
+  cyber:[
+    {phase:'Phase 1 · Weeks 1-4',title:'Networking Fundamentals',desc:'TCP/IP, DNS, HTTP/HTTPS, firewalls, VPNs, OSI model. CompTIA Network+ prep.',resources:['Professor Messer','TryHackMe Intro','Cisco Networking Academy']},
+    {phase:'Phase 2 · Weeks 5-10',title:'Linux & Scripting',desc:'Linux command line, Bash scripting, Python for security automation.',resources:['OverTheWire','The Linux Command Line','Bash scripting guide']},
+    {phase:'Phase 3 · Weeks 11-18',title:'Ethical Hacking',desc:'Kali Linux, Metasploit, Burp Suite, SQLi, XSS, penetration testing methodology.',resources:['TryHackMe','HackTheBox','TCM Security']},
+    {phase:'Phase 4 · Weeks 19-26',title:'Certifications',desc:'CompTIA Security+, CEH, OSCP. Practice with CTF challenges.',resources:['CompTIA Study Guide','Offensive Security','CTFtime.org']},
+    {phase:'Phase 5 · Weeks 27-32',title:'Specialization',desc:'Cloud security (AWS/Azure), incident response, SIEM tools, threat intelligence.',resources:['AWS Security Specialty','Blue Team Labs','SANS Institute']}
+  ],
+  cloud:[
+    {phase:'Phase 1 · Weeks 1-4',title:'Cloud Fundamentals',desc:'Cloud concepts, service models (IaaS/PaaS/SaaS), regions, availability zones.',resources:['AWS Cloud Practitioner','Google Cloud Fundamentals','Azure Fundamentals']},
+    {phase:'Phase 2 · Weeks 5-12',title:'Core AWS / GCP Services',desc:'EC2, S3, RDS, Lambda, VPC, IAM, CloudFormation / Terraform.',resources:['AWS Free Tier','A Cloud Guru','Terraform Docs']},
+    {phase:'Phase 3 · Weeks 13-20',title:'Containerization',desc:'Docker, Kubernetes, Helm, EKS/GKE. Container security and orchestration.',resources:['Docker Docs','Kubernetes.io','Kelsey Hightower']},
+    {phase:'Phase 4 · Weeks 21-28',title:'Architecture & Cost',desc:'Well-Architected Framework, cost optimization, serverless architectures, microservices.',resources:['AWS Well-Architected','Serverless Framework','Architecture Patterns']},
+    {phase:'Phase 5 · Weeks 29-36',title:'Certifications',desc:'AWS Solutions Architect / GCP Professional / Azure Solutions Architect.',resources:['AWS Exam Guide','WhizLabs','TutorialsDojo']}
+  ],
+  devops:[
+    {phase:'Phase 1 · Weeks 1-4',title:'Linux & Version Control',desc:'Linux administration, Git workflows, branching strategies, conventional commits.',resources:['Linux Command Line','Pro Git Book','Atlassian Git Tutorials']},
+    {phase:'Phase 2 · Weeks 5-10',title:'CI/CD Pipelines',desc:'GitHub Actions, Jenkins, GitLab CI, pipeline design, testing automation.',resources:['GitHub Actions Docs','Jenkins Docs','DevOps Roadmap']},
+    {phase:'Phase 3 · Weeks 11-18',title:'Containerization & IaC',desc:'Docker, Kubernetes, Terraform, Ansible. Infrastructure as code best practices.',resources:['Terraform Docs','Kubernetes Docs','Learn Ansible']},
+    {phase:'Phase 4 · Weeks 19-26',title:'Monitoring & Observability',desc:'Prometheus, Grafana, ELK Stack, distributed tracing, SRE principles.',resources:['Grafana Tutorials','Elastic Docs','Google SRE Book']},
+    {phase:'Phase 5 · Weeks 27-32',title:'Cloud & Security',desc:'CloudSecOps, DevSecOps, secret management, compliance automation.',resources:['HashiCorp Vault','AWS DevOps Pro','DevSecOps Institute']}
+  ]
+};
+
+function selectRoadmap(btn,key){
+  document.querySelectorAll('.road-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  currentRoadmap=key;
+  renderRoadmap(key);
+}
+
+function renderRoadmap(key){
+  const steps=roadmaps[key]||[];
+  document.getElementById('roadmap-content').innerHTML=steps.map(s=>`
+    <div class="roadmap-step">
+      <div class="step-card glass">
+        <div class="step-phase">${s.phase}</div>
+        <div class="step-title">${s.title}</div>
+        <div class="step-desc">${s.desc}</div>
+        <div class="step-resources">${s.resources.map(r=>`<span class="resource-link">${r}</span>`).join('')}</div>
+      </div>
+    </div>`).join('');
+}
+
+// ==================== PROJECT GENERATOR ====================
+async function generateProjects(){
+  const domain=document.getElementById('proj-domain').value;
+  const level=document.getElementById('proj-level').value;
+  const stack=document.getElementById('proj-stack').value.trim();
+  const purpose=document.getElementById('proj-purpose').value;
+  const spinner=document.getElementById('proj-spinner');
+  const result=document.getElementById('proj-result');
+  spinner.style.display='block';result.innerHTML='';
+
+  const system=`You are a creative software architect. Generate 4 unique project ideas in JSON array format:
+[
+  {
+    "name": "project name",
+    "difficulty": "Beginner|Intermediate|Advanced",
+    "description": "2 sentence description",
+    "tech_stack": ["tech1","tech2","tech3"],
+    "unique_angle": "what makes it special",
+    "estimated_time": "X weeks"
+  }
+]
+Return ONLY the JSON array.`;
+
+  const res=await callAI(system,`Generate ${level} ${domain} project ideas for ${purpose}. Tech stack: ${stack||'any'}`);
+  spinner.style.display='none';
+  if(res){
+    try{
+      const projects=JSON.parse(res.replace(/```json|```/g,'').trim());
+      const diffColors={Beginner:'var(--neon-green)',Intermediate:'#ffaa00',Advanced:'var(--neon-pink)'};
+      result.innerHTML=projects.map(p=>`
+        <div class="proj-idea glass" onclick="showProjectDetail('${escAttr(JSON.stringify(p))}')">
+          <span class="proj-difficulty" style="background:rgba(0,0,0,0.3);color:${diffColors[p.difficulty]||'var(--neon-cyan)'};border:1px solid ${diffColors[p.difficulty]||'var(--neon-cyan)'}">
+            ${p.difficulty} · ${p.estimated_time}
+          </span>
+          <div class="proj-name">${p.name}</div>
+          <div class="proj-desc">${p.description}</div>
+          <div style="font-size:12px;color:var(--neon-purple);margin-top:8px">✨ ${p.unique_angle}</div>
+          <div class="proj-stack">${(p.tech_stack||[]).map(t=>`<span class="tag">${t}</span>`).join('')}</div>
+        </div>`).join('');
+      toast('4 project ideas generated!','success');
+    }catch(e){
+      result.innerHTML=`<div style="padding:20px;font-size:14px;line-height:1.7;color:var(--text2)">${escHtml(res)}</div>`;
+    }
+  } else {
+    result.innerHTML='<div style="color:var(--neon-pink);text-align:center;padding:40px">Generation failed. Please retry.</div>';
+  }
+}
+
+function showProjectDetail(jsonStr){
+  try{
+    const p=JSON.parse(jsonStr);
+    showModal(`
+      <h3 style="font-size:22px;font-weight:800;margin-bottom:8px">${p.name}</h3>
+      <p style="color:var(--text2);font-size:14px;margin-bottom:20px">${p.description}</p>
+      <div class="result-section">
+        <div class="result-label">Unique Angle</div>
+        <div class="result-value neon-purple">${p.unique_angle}</div>
+      </div>
+      <div class="result-section">
+        <div class="result-label">Tech Stack</div>
+        <div class="tag-list">${(p.tech_stack||[]).map(t=>`<span class="tag">${t}</span>`).join('')}</div>
+      </div>
+      <div class="result-section">
+        <div class="result-label">Estimated Time</div>
+        <div class="result-value">${p.estimated_time}</div>
+      </div>
+      <button class="btn btn-primary" style="width:100%;justify-content:center;margin-top:16px" onclick="getFullProjectBlueprint('${escAttr(jsonStr)}')">
+        🏗 Generate Full Blueprint
+      </button>`);
+  }catch(e){}
+}
+
+async function getFullProjectBlueprint(jsonStr){
+  const p=JSON.parse(jsonStr);
+  closeModal();
+  const spinner=document.getElementById('proj-spinner');
+  const result=document.getElementById('proj-result');
+  spinner.style.display='block';
+  
+  const res=await callAI(
+    'You are a software architect. Create a detailed project blueprint with: architecture overview, database schema outline, key API endpoints, folder structure, and first implementation steps.',
+    `Create a full blueprint for: ${p.name}\n${p.description}\nTech stack: ${(p.tech_stack||[]).join(', ')}`
+  );
+  spinner.style.display='none';
+  if(res){
+    const html=res
+      .replace(/^#{1,3} (.+)$/gm,'<div style="font-size:16px;font-weight:700;color:var(--neon-cyan);margin:20px 0 8px">$1</div>')
+      .replace(/^```[\w]*$/gm,'<pre style="background:rgba(0,0,0,0.4);padding:16px;border-radius:8px;font-family:JetBrains Mono,monospace;font-size:13px;overflow-x:auto"><code>')
+      .replace(/^```$/gm,'</code></pre>')
+      .replace(/\n/g,'<br>');
+    result.innerHTML=`<div style="line-height:1.7;font-size:14px">${html}</div>`;
+    toast('Blueprint generated!','success');
+  }
+}
+
+// ==================== TECH NEWS ====================
+const newsData=[
+  {cat:'ai',catLabel:'AI & ML',color:'var(--neon-purple)',title:'GPT-5 Achieves Human-Level Reasoning on 95% of Benchmarks',snippet:'OpenAI\'s latest model demonstrates unprecedented capabilities in multi-step reasoning, coding, and scientific problem-solving tasks.',source:'TechCrunch',time:'2 hours ago'},
+  {cat:'web',catLabel:'Web Dev',color:'var(--neon-cyan)',title:'React 20 Introduces Server Actions and Automatic Batching',snippet:'The React team releases version 20 with major performance improvements, native server actions support, and simplified state management.',source:'React Blog',time:'4 hours ago'},
+  {cat:'cloud',catLabel:'Cloud',color:'#4fc3f7',title:'AWS Announces 40% Price Reduction on Lambda Functions',snippet:'Amazon Web Services cuts serverless compute costs significantly, making cloud functions more accessible for startups and indie developers.',source:'AWS Blog',time:'6 hours ago'},
+  {cat:'ai',catLabel:'AI & ML',color:'var(--neon-purple)',title:'Mistral AI Releases Open-Source 70B Parameter Model',snippet:'French AI startup Mistral releases its largest open-source model yet, outperforming GPT-3.5 on most benchmarks at a fraction of the cost.',source:'VentureBeat',time:'8 hours ago'},
+  {cat:'security',catLabel:'Security',color:'var(--neon-pink)',title:'Critical Zero-Day Found in OpenSSL — Patch Immediately',snippet:'Security researchers discovered a memory corruption vulnerability in OpenSSL 3.x affecting millions of servers. Patch available now.',source:'SecurityWeek',time:'10 hours ago'},
+  {cat:'open-source',catLabel:'Open Source',color:'var(--neon-green)',title:'Bun 2.0 Launches with 3x Performance Improvement over Node.js',snippet:'The JavaScript runtime Bun releases version 2.0 with dramatically improved cold starts, native TypeScript, and built-in package management.',source:'GitHub Blog',time:'12 hours ago'},
+  {cat:'web',catLabel:'Web Dev',color:'var(--neon-cyan)',title:'Tailwind CSS 4.0 Beta — No More Config Files',snippet:'The popular CSS framework announces version 4.0 in beta with zero-config setup, native CSS cascade layers, and 30% smaller bundle sizes.',source:'Tailwind Blog',time:'1 day ago'},
+  {cat:'cloud',catLabel:'Cloud',color:'#4fc3f7',title:'Google Kubernetes Engine Now Supports Spot VMs by Default',snippet:'GKE introduces automatic spot VM scheduling for batch workloads, reducing Kubernetes cluster costs by up to 90% for eligible workloads.',source:'Google Cloud Blog',time:'1 day ago'},
+  {cat:'ai',catLabel:'AI & ML',color:'var(--neon-purple)',title:'Meta\'s Llama 4 Achieves 128K Context Window at Open Source',snippet:'Meta Research releases Llama 4 with extended context window, multimodal capabilities, and Apache 2.0 license for commercial use.',source:'Meta AI',time:'2 days ago'}
+];
+
+function renderNews(cat){
+  const filtered=cat==='all'?newsData:newsData.filter(n=>n.cat===cat);
+  document.getElementById('news-grid').innerHTML=filtered.map(n=>`
+    <div class="news-card glass" onclick="openNewsDetail('${escAttr(n.title)}','${escAttr(n.snippet)}','${n.source}')">
+      <div class="news-cat" style="color:${n.color}">${n.catLabel}</div>
+      <div class="news-title">${n.title}</div>
+      <div class="news-snippet">${n.snippet}</div>
+      <div class="news-meta">
+        <span>${n.source}</span>
+        <span>·</span>
+        <span>${n.time}</span>
+      </div>
+    </div>`).join('');
+}
+
+function filterNews(btn,cat){
+  document.querySelectorAll('#page-tech-news .road-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  renderNews(cat);
+}
+
+function openNewsDetail(title,snippet,source){
+  showModal(`
+    <div style="font-size:12px;color:var(--neon-cyan);margin-bottom:12px;letter-spacing:2px">TECH NEWS</div>
+    <h3 style="font-size:20px;font-weight:800;margin-bottom:16px;line-height:1.4">${title}</h3>
+    <p style="font-size:15px;color:var(--text2);line-height:1.7;margin-bottom:16px">${snippet}</p>
+    <div style="font-size:13px;color:var(--text3)">Source: ${source}</div>
+    <button class="btn btn-outline btn-sm" style="margin-top:20px" onclick="closeModal()">Close</button>
+  `);
+}
+
+// ==================== COMMUNITY ====================
+const defaultPosts=[
+  {id:1,author:'Riya Sharma',avatar:'RS',color:'var(--neon-cyan)',time:'1 hour ago',body:'Just passed my Google SDE interview! 🎉 3 months of prep with DevVerse AI was worth it. The mock interview feature is incredible. AMA!',likes:47,comments:12,tags:['#Google','#Interview']},
+  {id:2,author:'Arjun Patel',avatar:'AP',color:'var(--neon-purple)',time:'3 hours ago',body:'Built a real-time collaborative code editor using WebSockets + React. Open for collaboration! DM me or check out my GitHub. #OpenSource #React',likes:31,comments:8,tags:['#React','#WebSockets']},
+  {id:3,author:'Priya Mehta',avatar:'PM',color:'var(--neon-green)',time:'5 hours ago',body:'Completed the AI/ML roadmap here and secured a Data Science internship at a FAANG company! DevVerse AI\'s career advisor gave me exactly the right direction. 🙌',likes:89,comments:24,tags:['#DataScience','#Internship']},
+  {id:4,author:'Kiran Kumar',avatar:'KK',color:'#ffaa00',time:'8 hours ago',body:'Quick tip: When practicing SQL for interviews, focus on window functions (ROW_NUMBER, RANK, LAG/LEAD) — they appear in 70% of data analyst rounds! Share your SQL tips below 👇',likes:56,comments:31,tags:['#SQL','#Interview']}
+];
+
+const members=[
+  {name:'Sai Nandareddy',role:'Data Analyst · GITAM',avatar:'SN',color:'var(--neon-cyan)',xp:'1.2K'},
+  {name:'Riya Sharma',role:'SDE · Google',avatar:'RS',color:'var(--neon-purple)',xp:'8.4K'},
+  {name:'Arjun Patel',role:'Full Stack Dev',avatar:'AP',color:'var(--neon-green)',xp:'3.1K'},
+  {name:'Priya Mehta',role:'Data Scientist',avatar:'PM',color:'#ffaa00',xp:'5.7K'}
+];
+
+function initCommunity(){
+  postsData=[...defaultPosts];
+  renderPosts();
+  document.getElementById('active-members').innerHTML=members.map(m=>`
+    <div style="display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--border)">
+      <div style="width:38px;height:38px;border-radius:50%;background:${m.color};display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;flex-shrink:0">${m.avatar}</div>
+      <div style="flex:1;min-width:0">
+        <div style="font-size:14px;font-weight:600">${m.name}</div>
+        <div style="font-size:12px;color:var(--text2)">${m.role}</div>
+      </div>
+      <div>
+        <button class="btn btn-ghost btn-sm" style="padding:4px 10px;font-size:11px" onclick="toggleFollow(this,'${m.name}')">${followedUsers.has(m.name)?'Following':'Follow'}</button>
+      </div>
+    </div>`).join('');
+}
+
+function renderPosts(){
+  document.getElementById('posts-list').innerHTML=postsData.map(p=>`
+    <div class="post-card glass" id="post-${p.id}">
+      <div class="post-meta">
+        <div class="post-avatar" style="background:${p.color}">${p.avatar}</div>
+        <div><div class="post-author">${p.author}</div><div class="post-time">${p.time}</div></div>
+      </div>
+      ${p.image?`<img src="${p.image}" class="post-image" style="display:block">`:'' }
+      <div class="post-body">${p.body}</div>
+      <div class="tag-list">${(p.tags||[]).map(t=>`<span class="tag" style="font-size:11px">${t}</span>`).join('')}</div>
+      <div class="post-actions" style="margin-top:12px">
+        <div class="post-action" onclick="toggleLike(${p.id},this)">
+          <span>${likedPosts.has(p.id)?'❤':'🤍'}</span>
+          <span id="like-count-${p.id}">${p.likes}</span>
+        </div>
+        <div class="post-action" onclick="commentPost(${p.id})"><span>💬</span><span>${p.comments}</span></div>
+        <div class="post-action" onclick="sharePost(${p.id})"><span>↗</span><span>Share</span></div>
+      </div>
+    </div>`).join('');
+}
+
+function toggleLike(id,btn){
+  const post=postsData.find(p=>p.id===id);
+  if(!post)return;
+  if(likedPosts.has(id)){likedPosts.delete(id);post.likes--}
+  else{likedPosts.add(id);post.likes++}
+  const span=btn.querySelector('span:first-child');
+  const count=document.getElementById('like-count-'+id);
+  if(span)span.textContent=likedPosts.has(id)?'❤':'🤍';
+  if(count)count.textContent=post.likes;
+}
+
+function commentPost(id){
+  showModal(`
+    <h3 style="font-size:18px;font-weight:700;margin-bottom:20px">💬 Add Comment</h3>
+    <textarea class="code-area" id="comment-text" style="min-height:120px;font-family:Inter,sans-serif" placeholder="Write your comment..."></textarea>
+    <button class="btn btn-primary" style="width:100%;justify-content:center;margin-top:16px" onclick="submitComment(${id})">Post Comment</button>`);
+}
+
+function submitComment(id){
+  const text=document.getElementById('comment-text').value.trim();
+  if(!text){toast('Write something first','error');return}
+  const post=postsData.find(p=>p.id===id);
+  if(post)post.comments++;
+  closeModal();
+  renderPosts();
+  toast('Comment posted!','success');
+}
+
+function sharePost(id){
+  navigator.clipboard.writeText(window.location.href+'#post-'+id).then(()=>toast('Post link copied!','success'));
+}
+
+function addImageToPost(){document.getElementById('post-image-file').click()}
+function handlePostImage(input){
+  const f=input.files[0];if(!f)return;
+  const r=new FileReader();
+  r.onload=e=>{
+    const img=document.getElementById('post-image-preview');
+    img.src=e.target.result;img.style.display='block';
+  };
+  r.readAsDataURL(f);
+  toast('Image added to post','success');
+}
+
+function addCodeToPost(){
+  const ta=document.getElementById('new-post-text');
+  ta.value+='\n```\n// paste your code here\n```\n';
+  ta.focus();
+}
+
+function toggleFollow(btn,name){
+  if(followedUsers.has(name)){followedUsers.delete(name);btn.textContent='Follow'}
+  else{followedUsers.add(name);btn.textContent='Following';toast('Now following '+name,'success')}
+}
+
+function submitPost(){
+  const text=document.getElementById('new-post-text').value.trim();
+  if(!text){toast('Write something to post','error');return}
+  const img=document.getElementById('post-image-preview');
+  const newPost={
+    id:Date.now(),
+    author:currentUser?.name||'You',
+    avatar:(currentUser?.fname?.[0]||'Y')+(currentUser?.lname?.[0]||''),
+    color:'var(--neon-cyan)',
+    time:'Just now',
+    body:text,
+    image:img.style.display!='none'?img.src:'',
+    likes:0,
+    comments:0,
+    tags:[]
+  };
+  postsData.unshift(newPost);
+  document.getElementById('new-post-text').value='';
+  img.src='';img.style.display='none';
+  renderPosts();
+  toast('Post published!','success');
+  addActivity('Posted in Community Forum');
+}
+
+// ==================== HACKATHONS ====================
+const hackData=[
+  {status:'live',title:'AI Innovation Hackathon 2025',org:'DevVerse AI × Google',prize:'₹5,00,000',deadline:'3 days left',team:'2-4 members',theme:'Build an AI tool that solves a real-world problem',registered:847},
+  {status:'upcoming',title:'Open Source DevOps Challenge',org:'CNCF × Linux Foundation',prize:'$10,000',deadline:'Starts in 2 weeks',team:'1-3 members',theme:'Contribute to cloud-native open source projects',registered:423},
+  {status:'upcoming',title:'FinTech Hackathon India 2025',org:'RazorPay × Paytm',prize:'₹3,00,000',deadline:'Starts in 1 month',team:'2-5 members',theme:'Revolutionize digital payments and financial inclusion',registered:1204},
+  {status:'live',title:'Cybersecurity CTF Challenge',org:'HackerOne',prize:'$5,000',deadline:'5 days left',team:'Solo or pair',theme:'Capture the flag — web, binary, crypto challenges',registered:634},
+  {status:'ended',title:'ML Model Optimization Sprint',org:'Hugging Face',prize:'GPU Credits',deadline:'Ended',team:'Any size',theme:'Optimize open-source ML models for edge devices',registered:2341},
+  {status:'upcoming',title:'Sustainable Tech Hackathon',org:'AWS × UN Environment',prize:'$15,000',deadline:'Starts in 3 weeks',team:'2-4 members',theme:'Tech solutions for climate change and sustainability',registered:567}
+];
+
+function renderHackathons(){
+  document.getElementById('hackathon-list').innerHTML=hackData.map(h=>`
+    <div class="hack-card glass">
+      <span class="hack-status ${h.status}">${h.status==='live'?'🔴 LIVE':h.status==='upcoming'?'🔵 UPCOMING':'⚫ ENDED'}</span>
+      <div class="hack-title">${h.title}</div>
+      <div class="hack-org">By ${h.org}</div>
+      <div class="hack-info">
+        <div class="hack-info-item"><label>Prize Pool</label><span class="hack-prize">${h.prize}</span></div>
+        <div class="hack-info-item"><label>Timeline</label><span>${h.deadline}</span></div>
+        <div class="hack-info-item"><label>Team Size</label><span>${h.team}</span></div>
+        <div class="hack-info-item"><label>Registered</label><span>${h.registered.toLocaleString()}</span></div>
+      </div>
+      <div style="font-size:13px;color:var(--text2);margin-bottom:20px;padding:12px;background:var(--surface);border-radius:8px">🎯 ${h.theme}</div>
+      <div style="display:flex;gap:10px;flex-wrap:wrap">
+        ${h.status!=='ended'?`<button class="btn btn-primary btn-sm" onclick="registerHackathon('${h.title}')">Register Now</button>`:''} 
+        <button class="btn btn-ghost btn-sm" onclick="viewHackDetails('${escAttr(JSON.stringify(h))}')">View Details</button>
+      </div>
+    </div>`).join('');
+}
+
+function registerHackathon(title){
+  if(!currentUser){toast('Please sign in to register','error');showPage('login');return}
+  showModal(`
+    <h3 style="font-size:20px;font-weight:800;margin-bottom:16px">🏆 Register for Hackathon</h3>
+    <p style="color:var(--text2);margin-bottom:20px">${title}</p>
+    <div class="form-group"><label class="form-label">Team Name</label><input type="text" class="form-input" id="team-name" placeholder="Team Awesome"></div>
+    <div class="form-group"><label class="form-label">Project Idea (brief)</label><textarea class="code-area" id="team-idea" style="min-height:100px;font-family:Inter,sans-serif" placeholder="What are you going to build?"></textarea></div>
+    <button class="btn btn-primary" style="width:100%;justify-content:center;margin-top:16px" onclick="confirmRegister('${escAttr(title)}')">✅ Confirm Registration</button>`);
+}
+
+function confirmRegister(title){
+  const name=document.getElementById('team-name').value.trim();
+  if(!name){toast('Enter a team name','error');return}
+  closeModal();
+  toast('Registered for '+title+'! Check your email for details.','success');
+  addActivity('Registered for: '+title);
+}
+
+function viewHackDetails(jsonStr){
+  const h=JSON.parse(jsonStr);
+  showModal(`
+    <h3 style="font-size:20px;font-weight:800;margin-bottom:8px">${h.title}</h3>
+    <p style="color:var(--text2);margin-bottom:20px">Organized by ${h.org}</p>
+    <div class="result-section"><div class="result-label">Theme</div><div class="result-value">${h.theme}</div></div>
+    <div class="result-section"><div class="result-label">Prize Pool</div><div class="result-value hack-prize">${h.prize}</div></div>
+    <div class="result-section"><div class="result-label">Timeline</div><div class="result-value">${h.deadline}</div></div>
+    <div class="result-section"><div class="result-label">Team Size</div><div class="result-value">${h.team}</div></div>
+    <div class="result-section"><div class="result-label">Registered Teams</div><div class="result-value">${h.registered.toLocaleString()}</div></div>
+    ${h.status!=='ended'?`<button class="btn btn-primary" style="width:100%;justify-content:center;margin-top:16px" onclick="closeModal();registerHackathon('${escAttr(h.title)}')">Register Now</button>`:'<button class="btn btn-ghost" style="width:100%;justify-content:center;margin-top:16px" onclick="closeModal()">Close</button>'}`);
+}
+
+// ==================== LEADERBOARD ====================
+const lbData=[
+  {rank:1,name:'Ishaan Verma',avatar:'IV',color:'#ffd700',location:'IIT Bombay',xp:24750,projects:47,badges:['🏆','🔥','⭐','💎']},
+  {rank:2,name:'Sneha Agarwal',avatar:'SA',color:'#c0c0c0',location:'BITS Pilani',xp:21340,projects:39,badges:['🥈','🔥','⭐']},
+  {rank:3,name:'Riya Sharma',avatar:'RS',color:'#cd7f32',location:'Google SDE',xp:19820,projects:52,badges:['🥉','⭐','💻']},
+  {rank:4,name:'Kiran Kumar',avatar:'KK',color:'var(--neon-cyan)',location:'IIT Madras',xp:16590,projects:31,badges:['🔥','💻']},
+  {rank:5,name:'Arjun Patel',avatar:'AP',color:'var(--neon-purple)',location:'Startup Founder',xp:14230,projects:28,badges:['💡','🔥']},
+  {rank:6,name:'Priya Mehta',avatar:'PM',color:'var(--neon-green)',location:'Data Scientist',xp:12780,projects:24,badges:['📊','💻']},
+  {rank:7,name:'Rahul Singh',avatar:'RS2',color:'#ffaa00',location:'NIT Trichy',xp:11450,projects:19,badges:['⭐']},
+  {rank:8,name:'You (Sai)',avatar:'SN',color:'var(--neon-cyan)',location:'GITAM University',xp:1200,projects:3,badges:['🌱']},
+];
+
+function renderLeaderboard(){
+  document.getElementById('lb-body').innerHTML=lbData.map(u=>{
+    const rankClass=u.rank===1?'gold':u.rank===2?'silver':u.rank===3?'bronze':'';
+    const xpPct=Math.min(100,u.xp/250);
+    return `<tr style="${u.name.includes('Sai')?'background:rgba(0,245,255,0.04)':''}">
+      <td><span class="lb-rank ${rankClass}">${u.rank===1?'🥇':u.rank===2?'🥈':u.rank===3?'🥉':'#'+u.rank}</span></td>
+      <td>
+        <div class="lb-user">
+          <div class="lb-avatar" style="background:${u.color};color:#fff">${u.avatar[0]||u.avatar.slice(0,2)}</div>
+          <div>
+            <div style="font-weight:600;font-size:14px">${u.name}</div>
+            <div style="font-size:12px;color:var(--text3)">${u.location}</div>
+          </div>
+        </div>
+      </td>
+      <td>
+        <div style="font-weight:700;font-size:15px">${u.xp.toLocaleString()}</div>
+        <div class="xp-bar"><div class="xp-fill" style="width:${xpPct}%"></div></div>
+      </td>
+      <td style="font-weight:600">${u.projects}</td>
+      <td><div class="badge-list">${u.badges.map(b=>`<span style="font-size:18px">${b}</span>`).join('')}</div></td>
+    </tr>`;
+  }).join('');
+}
+
+function filterLB(btn){
+  document.querySelectorAll('#page-leaderboard .road-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  renderLeaderboard();
+  toast('Leaderboard updated','info');
+}
+
+// ==================== HELPERS ====================
+function escHtml(str){
+  return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+function escAttr(str){
+  return String(str).replace(/'/g,'&#39;').replace(/"/g,'&quot;');
+}
+
+function addActivity(text){
+  const list=document.getElementById('activity-list');
+  if(!list)return;
+  const colors=['var(--neon-cyan)','var(--neon-purple)','var(--neon-green)','var(--neon-pink)','#ffaa00'];
+  const div=document.createElement('div');div.className='activity-item';
+  div.innerHTML=`<div class="a-dot" style="background:${colors[Math.floor(Math.random()*5)]}"></div><div><div class="a-text">${text}</div><div class="a-time">Just now</div></div>`;
+  list.insertBefore(div,list.firstChild);
+  if(list.children.length>8)list.removeChild(list.lastChild);
+}
+
+// ==================== INIT ====================
+window.addEventListener('DOMContentLoaded',()=>{
+  // Restore session
+  if(currentUser){
+    setDashUser(currentUser);
+    const navActions=document.getElementById('navActions');
+    navActions.innerHTML=`<button class="btn btn-ghost btn-sm" onclick="toggleSidebar()">☰ Menu</button><button class="btn btn-danger btn-sm" onclick="logout()">Logout</button>`;
+    document.getElementById('navLinks').style.display='none';
+  }
+  
+  // Tilt cards on mouse move
+  document.addEventListener('mousemove',e=>{
+    document.querySelectorAll('.feature-card').forEach(card=>{
+      const rect=card.getBoundingClientRect();
+      const cx=rect.left+rect.width/2;
+      const cy=rect.top+rect.height/2;
+      const dx=(e.clientX-cx)/rect.width*10;
+      const dy=(e.clientY-cy)/rect.height*10;
+      card.style.transform=`perspective(600px) rotateY(${dx}deg) rotateX(${-dy}deg) translateY(-4px)`;
+    });
+  });
+  document.addEventListener('mouseleave',()=>{
+    document.querySelectorAll('.feature-card').forEach(card=>{card.style.transform=''});
+  });
+
+  renderRoadmap('webdev');
+  renderNews('all');
+  renderHackathons();
+  renderLeaderboard();
+});
+
+// Show landing page by default
+showPage('landing');
+</script>
+</body>
+</html>
